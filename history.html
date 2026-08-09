@@ -9,11 +9,16 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>Champion Habit Tracker - History</title>
+    <title>
+        Champion Habit Tracker - History
+    </title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css">
 
 </head>
+
 
 <body>
 
@@ -44,7 +49,7 @@
 
     <div id="historyList">
 
-        <!-- Reports will be loaded here -->
+        <!-- Reports will appear here -->
 
     </div>
 
@@ -57,7 +62,7 @@
     ====================================== -->
 
     <h2>
-        📊 WEEKLY REPORT
+        📊 Weekly Report
     </h2>
 
 
@@ -119,9 +124,11 @@
     ====================================== -->
 
     <h2>
-        📅 MONTHLY REPORT
+        📅 Monthly Report
     </h2>
 
+
+    <!-- MONTH SELECTOR -->
 
     <p>
         Select Month:
@@ -137,12 +144,42 @@
     </select>
 
 
-    <div id="monthlyDays">
+    <!-- =====================================
+         MONTHLY CALENDAR
+    ====================================== -->
 
-        <!-- Monthly reports appear here -->
+    <div
+        id="monthlyCalendar"
+        class="monthly-calendar">
+
+        <!-- Calendar will appear here -->
 
     </div>
 
+
+    <!-- =====================================
+         SELECTED DATE REPORT
+    ====================================== -->
+
+    <div
+        id="selectedDateReport"
+        class="selected-date-report">
+
+        <h3>
+            📅 Select a date
+        </h3>
+
+        <p>
+            Click a date from the calendar
+            to view the report.
+        </p>
+
+    </div>
+
+
+    <!-- =====================================
+         MONTHLY AVERAGE
+    ====================================== -->
 
     <h3 id="monthlyAverage">
 
