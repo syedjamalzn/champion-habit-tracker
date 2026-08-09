@@ -649,150 +649,471 @@ function loadWeeklyReport() {
 
     weeklyDays.innerHTML = "";
 
+    // =================================
+    // TODAY
+    // =================================
+
     let today =
         new Date();
 
-    let day =
+    today.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+    // =================================
+    // CURRENT WEEK MONDAY
+    // =================================
+
+    let todayDay =
         today.getDay();
 
-    let monday =
+    let currentMonday =
         new Date(today);
 
     let difference =
-        day === 0
+        todayDay === 0
             ? -6
-            : 1 - day;
+            : 1 - todayDay;
 
-    monday.setDate(
-        today.getDate() +
-        difference
+    currentMonday.setDate(
+        today.getDate() + difference
     );
 
-    let totalProgress = 0;
+    currentMonday.setHours(
+        0,
+        0,
+        0,
+        0
+    );
 
-    let dayNames = [
+    // =================================
+    // WEEK OFFSET
+    // 0 = CURRENT WEEK
+    // -1 = PREVIOUS WEEK
+    // -2 = 2 WEEKS BEFORE
+    // =================================
 
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat",
-        "Sun"
+    let weekOffset = 0;
 
-    ];
+    // =================================
+    // WEEK SELECTOR
+    // =================================
 
-    for (
-        let i = 0;
-        i < 7;
-        i++
-    ) {
-
-        let currentDate =
-            new Date(monday);
-
-        currentDate.setDate(
-            monday.getDate() + i
+    let previousButton =
+        document.getElementById(
+            "previousWeek"
         );
 
-        let year =
-            currentDate.getFullYear();
+    let nextButton =
+        document.getElementById(
+            "nextWeek"
+        );
 
-        let month =
-            String(
-                currentDate.getMonth() + 1
-            ).padStart(2, "0");
+    let weekTitle =
+        document.getElementById(
+            "weekTitle"
+        );
 
-        let date =
-            String(
-                currentDate.getDate()
-            ).padStart(2, "0");
+    function displayWeek() {
 
-        let reportKey =
-            `${user}_${year}_${month}_${date}`;
+        weeklyDays.innerHTML = "";
 
-        let savedReport =
-            localStorage.getItem(
-                reportKey
+        // =================================
+        // CALCULATE SELECTED WEEK MONDAY
+        // =================================
+
+        let monday =
+            new Date(
+                currentMonday
             );
 
-        let percentage = 0;
+        monday.setDate(
+            currentMonday.getDate() +
+            (weekOffset * 7)
+        );
 
-        if (savedReport) {
+        // =================================
+        // CALCULATE SUNDAY
+        // =================================
 
-            try {
+        let sunday =
+            new Date(
+                monday
+            );
 
-                let report =
-                    JSON.parse(
-                        savedReport
-                    );
+        sunday.setDate(
+            monday.getDate() + 6
+        );
 
-                let result =
-                    calculateProgress(
-                        report
-                    );
+        // =================================
+        // WEEK TITLE
+        // =================================
 
-                percentage =
-                    result.percentage;
+        let mondayDate =
+            String(
+                monday.getDate()
+            ).padStart(2, "0");
 
-            } catch (error) {
+        let mondayMonth =
+            String(
+                monday.getMonth() + 1
+            ).padStart(2, "0");
 
-                console.log(
-                    "Invalid report:",
-                    reportKey
-                );
+        let mondayYear =
+            monday.getFullYear();
 
-            }
+        let sundayDate =
+            String(
+                sunday.getDate()
+            ).padStart(2, "0");
+
+        let sundayMonth =
+            String(
+                sunday.getMonth() + 1
+            ).padStart(2, "0");
+
+        let sundayYear =
+            sunday.getFullYear();
+
+        if (weekTitle) {
+
+            weekTitle.innerHTML =
+                `📅 ${mondayDate}/${mondayMonth}/${mondayYear}
+                - ${sundayDate}/${sundayMonth}/${sundayYear}`;
 
         }
 
-        totalProgress +=
-            percentage;
+        // =================================
+        // NEXT WEEK BUTTON
+        // CURRENT WEEK = 0
+        // FUTURE WEEK BLOCK
+        // =================================
 
-        let dayCard =
-            document.createElement(
-                "div"
+        if (nextButton) {
+
+            nextButton.disabled =
+                weekOffset >= 0;
+
+        }
+
+        // =================================
+        // PREVIOUS WEEK BUTTON
+        // =================================
+
+        if (previousButton) {
+
+            previousButton.disabled =
+                false;
+
+        }
+
+        // =================================
+        // WEEK DAYS
+        // =================================
+
+        let dayNames = [
+
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat",
+            "Sun"
+
+        ];
+
+        let totalProgress = 0;
+
+        let trackedDays = 0;
+
+        // =================================
+        // DISPLAY 7 DAYS
+        // =================================
+
+        for (
+            let i = 0;
+            i < 7;
+            i++
+        ) {
+
+            let currentDate =
+                new Date(
+                    monday
+                );
+
+            currentDate.setDate(
+                monday.getDate() + i
             );
 
-        dayCard.className =
-            "history-card";
+            let year =
+                currentDate.getFullYear();
 
-        dayCard.innerHTML = `
+            let month =
+                String(
+                    currentDate.getMonth() + 1
+                ).padStart(2, "0");
 
-            <h3>
-                ${dayNames[i]}
-            </h3>
+            let date =
+                String(
+                    currentDate.getDate()
+                ).padStart(2, "0");
 
-            <p>
-                Progress :
-                <strong>
-                    ${percentage}%
-                </strong>
-            </p>
+            // =================================
+            // DO NOT SHOW FUTURE DAYS
+            // =================================
 
-            <progress
-                value="${percentage}"
-                max="100">
-            </progress>
+            let isFuture =
+                currentDate > today;
 
-        `;
+            let percentage = 0;
 
-        weeklyDays.appendChild(
-            dayCard
-        );
+            let completed = 0;
+
+            let hasReport = false;
+
+            // =================================
+            // LOAD SAVED REPORT
+            // =================================
+
+            if (!isFuture) {
+
+                let reportKey =
+                    `${user}_${year}_${month}_${date}`;
+
+                let savedReport =
+                    localStorage.getItem(
+                        reportKey
+                    );
+
+                if (savedReport) {
+
+                    try {
+
+                        let report =
+                            JSON.parse(
+                                savedReport
+                            );
+
+                        let result =
+                            calculateProgress(
+                                report
+                            );
+
+                        percentage =
+                            result.percentage;
+
+                        completed =
+                            result.completed;
+
+                        hasReport = true;
+
+                        totalProgress +=
+                            percentage;
+
+                        trackedDays++;
+
+                    } catch (error) {
+
+                        console.log(
+                            "Invalid report:",
+                            reportKey
+                        );
+
+                    }
+
+                }
+
+            }
+
+            // =================================
+            // CREATE DAY CARD
+            // =================================
+
+            let dayCard =
+                document.createElement(
+                    "div"
+                );
+
+            dayCard.className =
+                "history-card";
+
+            // =================================
+            // FUTURE DAY
+            // =================================
+
+            if (isFuture) {
+
+                dayCard.innerHTML = `
+
+                    <h3>
+                        ${dayNames[i]}
+                    </h3>
+
+                    <p>
+                        📅 ${date}/${month}/${year}
+                    </p>
+
+                    <p>
+                        ⏳ Not Available Yet
+                    </p>
+
+                `;
+
+            }
+
+            // =================================
+            // REPORT AVAILABLE
+            // =================================
+
+            else if (hasReport) {
+
+                dayCard.innerHTML = `
+
+                    <h3>
+                        ${dayNames[i]}
+                    </h3>
+
+                    <p>
+                        📅 ${date}/${month}/${year}
+                    </p>
+
+                    <p>
+                        Completed :
+                        <strong>
+                            ${completed} / ${totalHabits}
+                        </strong>
+                    </p>
+
+                    <p>
+                        Progress :
+                        <strong>
+                            ${percentage}%
+                        </strong>
+                    </p>
+
+                    <progress
+                        value="${percentage}"
+                        max="100">
+                    </progress>
+
+                `;
+
+            }
+
+            // =================================
+            // NO REPORT
+            // =================================
+
+            else {
+
+                dayCard.innerHTML = `
+
+                    <h3>
+                        ${dayNames[i]}
+                    </h3>
+
+                    <p>
+                        📅 ${date}/${month}/${year}
+                    </p>
+
+                    <p>
+                        📭 No Report Saved
+                    </p>
+
+                    <p>
+                        Progress :
+                        <strong>
+                            0%
+                        </strong>
+                    </p>
+
+                    <progress
+                        value="0"
+                        max="100">
+                    </progress>
+
+                `;
+
+            }
+
+            weeklyDays.appendChild(
+                dayCard
+            );
+
+        }
+
+        // =================================
+        // WEEKLY AVERAGE
+        // ONLY SAVED DAYS
+        // =================================
+
+        let average = 0;
+
+        if (trackedDays > 0) {
+
+            average =
+                Math.round(
+                    totalProgress /
+                    trackedDays
+                );
+
+        }
+
+        weeklyAverage.innerHTML =
+            `📊 Weekly Average : ${average}%`;
 
     }
 
-    let average =
-        Math.round(
-            totalProgress / 7
-        );
+    // =================================
+    // PREVIOUS WEEK
+    // =================================
 
-    weeklyAverage.innerHTML =
-        `📊 Weekly Average : ${average}%`;
+    if (previousButton) {
+
+        previousButton.onclick =
+            function() {
+
+                weekOffset--;
+
+                displayWeek();
+
+            };
+
+    }
+
+    // =================================
+    // NEXT WEEK
+    // =================================
+
+    if (nextButton) {
+
+        nextButton.onclick =
+            function() {
+
+                if (weekOffset < 0) {
+
+                    weekOffset++;
+
+                    displayWeek();
+
+                }
+
+            };
+
+    }
+
+    // =================================
+    // FIRST LOAD
+    // CURRENT WEEK
+    // =================================
+
+    displayWeek();
 
 }
-
 
 // =====================================
 // MONTHLY REPORT
