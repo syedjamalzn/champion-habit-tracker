@@ -1580,19 +1580,44 @@ document.addEventListener(
         // =================================
 
         if (
-            document.getElementById(
-                "historyList"
-            )
-        ) {
+    document.getElementById(
+        "historyList"
+    )
+) {
 
-            loadHistory();
+    loadHistory();
 
-            loadWeeklyReport();
+    loadWeeklyReport();
 
-            loadMonthlyReport();
+    loadMonthlyReport();
 
-        }
 
+    // =================================
+    // MONTH DROPDOWN CHANGE
+    // =================================
+
+    let monthSelector =
+        document.getElementById(
+            "monthSelector"
+        );
+
+
+    if (monthSelector) {
+
+        monthSelector.addEventListener(
+            "change",
+            function () {
+
+                loadMonthlyReport(
+                    this.value
+                );
+
+            }
+        );
+
+    }
+
+}
     }
 );
 
