@@ -42,12 +42,10 @@ const habitIds = [
     "nightMilk",
     "sleepBefore",
     "sleepHours"
-
 ];
 
 
 // Total number of habits
-
 const totalHabits = habitIds.length;
 
 
@@ -62,7 +60,6 @@ function welcomeUser() {
             'input[name="user"]:checked'
         );
 
-
     if (selectedUser) {
 
         localStorage.setItem(
@@ -70,20 +67,16 @@ function welcomeUser() {
             selectedUser.value
         );
 
-
         window.location =
             "checklist.html";
 
-    }
-
-    else {
+    } else {
 
         alert(
             "Please select a profile."
         );
 
     }
-
 }
 
 
@@ -96,19 +89,14 @@ function loadUser() {
     let user =
         localStorage.getItem("user");
 
-
     if (!user) {
-
         return;
-
     }
-
 
     let welcomeText =
         document.getElementById(
             "welcomeText"
         );
-
 
     if (welcomeText) {
 
@@ -117,12 +105,10 @@ function loadUser() {
 
     }
 
-
     let userName =
         document.getElementById(
             "userName"
         );
-
 
     if (userName) {
 
@@ -131,9 +117,7 @@ function loadUser() {
 
     }
 
-
     loadTodayDate();
-
 }
 
 
@@ -146,28 +130,23 @@ function loadTodayDate() {
     let today =
         new Date();
 
-
     let year =
         today.getFullYear();
-
 
     let month =
         String(
             today.getMonth() + 1
         ).padStart(2, "0");
 
-
     let date =
         String(
             today.getDate()
         ).padStart(2, "0");
 
-
     let todayDate =
         document.getElementById(
             "todayDate"
         );
-
 
     if (todayDate) {
 
@@ -175,7 +154,6 @@ function loadTodayDate() {
             `${date} / ${month} / ${year}`;
 
     }
-
 }
 
 
@@ -188,29 +166,23 @@ function getTodayReportKey() {
     let user =
         localStorage.getItem("user");
 
-
     let today =
         new Date();
 
-
     let year =
         today.getFullYear();
-
 
     let month =
         String(
             today.getMonth() + 1
         ).padStart(2, "0");
 
-
     let date =
         String(
             today.getDate()
         ).padStart(2, "0");
 
-
     return `${user}_${year}_${month}_${date}`;
-
 }
 
 
@@ -222,14 +194,10 @@ function saveReport() {
 
     let report = {};
 
-
-    // Collect all 21 checkbox values
-
     habitIds.forEach(function(id) {
 
         let checkbox =
             document.getElementById(id);
-
 
         if (checkbox) {
 
@@ -240,27 +208,19 @@ function saveReport() {
 
     });
 
-
     let reportKey =
         getTodayReportKey();
 
-
     localStorage.setItem(
-
         reportKey,
-
         JSON.stringify(report)
-
     );
 
-
     updateProgress();
-
 
     alert(
         "Report Saved Successfully ✅"
     );
-
 }
 
 
@@ -273,24 +233,20 @@ function loadReport() {
     let reportKey =
         getTodayReportKey();
 
-
     let savedReport =
         localStorage.getItem(
             reportKey
         );
-
 
     if (savedReport) {
 
         let report =
             JSON.parse(savedReport);
 
-
         habitIds.forEach(function(id) {
 
             let checkbox =
                 document.getElementById(id);
-
 
             if (
                 checkbox &&
@@ -306,9 +262,7 @@ function loadReport() {
 
     }
 
-
     updateProgress();
-
 }
 
 
@@ -320,7 +274,6 @@ function calculateProgress(report) {
 
     let completed = 0;
 
-
     habitIds.forEach(function(id) {
 
         if (report[id] === true) {
@@ -331,20 +284,15 @@ function calculateProgress(report) {
 
     });
 
-
     let percentage =
         Math.round(
             (completed / totalHabits) * 100
         );
 
-
     return {
-
         completed,
         percentage
-
     };
-
 }
 
 
@@ -356,12 +304,10 @@ function updateProgress() {
 
     let report = {};
 
-
     habitIds.forEach(function(id) {
 
         let checkbox =
             document.getElementById(id);
-
 
         if (checkbox) {
 
@@ -372,28 +318,23 @@ function updateProgress() {
 
     });
 
-
     let result =
         calculateProgress(report);
-
 
     let completedText =
         document.getElementById(
             "completedText"
         );
 
-
     let percentageText =
         document.getElementById(
             "percentageText"
         );
 
-
     let progressBar =
         document.getElementById(
             "progressBar"
         );
-
 
     if (completedText) {
 
@@ -402,7 +343,6 @@ function updateProgress() {
 
     }
 
-
     if (percentageText) {
 
         percentageText.innerHTML =
@@ -410,14 +350,12 @@ function updateProgress() {
 
     }
 
-
     if (progressBar) {
 
         progressBar.value =
             result.percentage;
 
     }
-
 }
 
 
@@ -430,19 +368,14 @@ function loadHistory() {
     let user =
         localStorage.getItem("user");
 
-
     if (!user) {
-
         return;
-
     }
-
 
     let welcomeText =
         document.getElementById(
             "welcomeText"
         );
-
 
     if (welcomeText) {
 
@@ -451,193 +384,20 @@ function loadHistory() {
 
     }
 
-
     let historyList =
         document.getElementById(
             "historyList"
         );
 
-
     if (!historyList) {
-
         return;
-
     }
-
 
     historyList.innerHTML = "";
 
-
     let reports = [];
 
-// =====================================
-// WEEKLY REPORT
-// =====================================
 
-function loadWeeklyReport() {
-
-    let user = localStorage.getItem("user");
-
-    if (!user) {
-        return;
-    }
-
-    let weeklyDays =
-        document.getElementById("weeklyDays");
-
-    let weeklyAverage =
-        document.getElementById("weeklyAverage");
-
-    if (!weeklyDays || !weeklyAverage) {
-        return;
-    }
-
-    weeklyDays.innerHTML = "";
-
-    let today = new Date();
-
-    let day = today.getDay();
-
-    let monday = new Date(today);
-
-    let difference =
-        day === 0 ? -6 : 1 - day;
-
-    monday.setDate(
-        today.getDate() + difference
-    );
-
-    let totalProgress = 0;
-
-    let dayNames = [
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat",
-        "Sun"
-    ];
-
-    // =================================
-    // MONDAY → SUNDAY
-    // =================================
-
-    for (let i = 0; i < 7; i++) {
-
-        let currentDate =
-            new Date(monday);
-
-        currentDate.setDate(
-            monday.getDate() + i
-        );
-
-        let year =
-            currentDate.getFullYear();
-
-        let month =
-            String(
-                currentDate.getMonth() + 1
-            ).padStart(2, "0");
-
-        let date =
-            String(
-                currentDate.getDate()
-            ).padStart(2, "0");
-
-        let reportKey =
-            `${user}_${year}_${month}_${date}`;
-
-        let savedReport =
-            localStorage.getItem(reportKey);
-
-        let percentage = 0;
-
-        // =================================
-        // LOAD REPORT
-        // =================================
-
-        if (savedReport) {
-
-            try {
-
-                let report =
-                    JSON.parse(savedReport);
-
-                let result =
-                    calculateProgress(report);
-
-                percentage =
-                    result.percentage;
-
-            }
-
-            catch (error) {
-
-                console.log(
-                    "Invalid report:",
-                    reportKey
-                );
-
-            }
-
-        }
-
-        // =================================
-        // ADD TO WEEKLY TOTAL
-        // =================================
-
-        totalProgress += percentage;
-
-        // =================================
-        // CREATE DAY CARD
-        // =================================
-
-        let dayCard =
-            document.createElement("div");
-
-        dayCard.className =
-            "history-card";
-
-        dayCard.innerHTML = `
-
-            <h3>
-                ${dayNames[i]}
-            </h3>
-
-            <p>
-                Progress :
-                <strong>
-                    ${percentage}%
-                </strong>
-            </p>
-
-            <progress
-                value="${percentage}"
-                max="100">
-            </progress>
-
-        `;
-
-        weeklyDays.appendChild(
-            dayCard
-        );
-
-    }
-
-    // =================================
-    // WEEKLY AVERAGE
-    // =================================
-
-    let average =
-        Math.round(
-            totalProgress / 7
-        );
-
-    weeklyAverage.innerHTML =
-        `📊 Weekly Average : ${average}%`;
-
-}
     // =================================
     // COLLECT USER REPORTS
     // =================================
@@ -651,7 +411,6 @@ function loadWeeklyReport() {
         let key =
             localStorage.key(i);
 
-
         if (
             key &&
             key.startsWith(
@@ -660,7 +419,6 @@ function loadWeeklyReport() {
         ) {
 
             // Ignore old _report key
-
             if (
                 key ===
                 `${user}_report`
@@ -670,10 +428,8 @@ function loadWeeklyReport() {
 
             }
 
-
             let savedReport =
                 localStorage.getItem(key);
-
 
             try {
 
@@ -682,17 +438,12 @@ function loadWeeklyReport() {
                         savedReport
                     );
 
-
                 reports.push({
-
                     key,
                     report
-
                 });
 
-            }
-
-            catch (error) {
+            } catch (error) {
 
                 console.log(
                     "Invalid report:",
@@ -728,32 +479,25 @@ function loadWeeklyReport() {
         let key =
             item.key;
 
-
         let report =
             item.report;
-
 
         let result =
             calculateProgress(
                 report
             );
 
-
         let parts =
             key.split("_");
-
 
         let year =
             parts[1];
 
-
         let month =
             parts[2];
 
-
         let date =
             parts[3];
-
 
         let months = [
 
@@ -763,7 +507,6 @@ function loadWeeklyReport() {
             "Apr",
             "May",
             "Jun",
-
             "Jul",
             "Aug",
             "Sep",
@@ -773,26 +516,21 @@ function loadWeeklyReport() {
 
         ];
 
-
         let monthName =
             months[
                 Number(month) - 1
             ];
 
-
         let displayDate =
             `${date} ${monthName} ${year}`;
-
 
         let card =
             document.createElement(
                 "div"
             );
 
-
         card.className =
             "history-card";
-
 
         card.innerHTML = `
 
@@ -818,7 +556,6 @@ function loadWeeklyReport() {
             </progress>
 
         `;
-
 
         historyList.appendChild(
             card
@@ -858,6 +595,208 @@ function loadWeeklyReport() {
 
 
 // =====================================
+// WEEKLY REPORT
+// =====================================
+
+function loadWeeklyReport() {
+
+    let user =
+        localStorage.getItem("user");
+
+    if (!user) {
+        return;
+    }
+
+    let weeklyDays =
+        document.getElementById(
+            "weeklyDays"
+        );
+
+    let weeklyAverage =
+        document.getElementById(
+            "weeklyAverage"
+        );
+
+    if (
+        !weeklyDays ||
+        !weeklyAverage
+    ) {
+        return;
+    }
+
+    weeklyDays.innerHTML = "";
+
+    let today =
+        new Date();
+
+    let day =
+        today.getDay();
+
+    let monday =
+        new Date(today);
+
+    let difference =
+        day === 0
+            ? -6
+            : 1 - day;
+
+    monday.setDate(
+        today.getDate() +
+        difference
+    );
+
+    let totalProgress = 0;
+
+    let dayNames = [
+
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+        "Sun"
+
+    ];
+
+
+    // =================================
+    // MONDAY → SUNDAY
+    // =================================
+
+    for (
+        let i = 0;
+        i < 7;
+        i++
+    ) {
+
+        let currentDate =
+            new Date(monday);
+
+        currentDate.setDate(
+            monday.getDate() + i
+        );
+
+        let year =
+            currentDate.getFullYear();
+
+        let month =
+            String(
+                currentDate.getMonth() + 1
+            ).padStart(2, "0");
+
+        let date =
+            String(
+                currentDate.getDate()
+            ).padStart(2, "0");
+
+        let reportKey =
+            `${user}_${year}_${month}_${date}`;
+
+        let savedReport =
+            localStorage.getItem(
+                reportKey
+            );
+
+        let percentage = 0;
+
+
+        // =================================
+        // LOAD REPORT
+        // =================================
+
+        if (savedReport) {
+
+            try {
+
+                let report =
+                    JSON.parse(
+                        savedReport
+                    );
+
+                let result =
+                    calculateProgress(
+                        report
+                    );
+
+                percentage =
+                    result.percentage;
+
+            } catch (error) {
+
+                console.log(
+                    "Invalid report:",
+                    reportKey
+                );
+
+            }
+
+        }
+
+
+        // =================================
+        // ADD TO WEEKLY TOTAL
+        // =================================
+
+        totalProgress +=
+            percentage;
+
+
+        // =================================
+        // CREATE DAY CARD
+        // =================================
+
+        let dayCard =
+            document.createElement(
+                "div"
+            );
+
+        dayCard.className =
+            "history-card";
+
+        dayCard.innerHTML = `
+
+            <h3>
+                ${dayNames[i]}
+            </h3>
+
+            <p>
+                Progress :
+                <strong>
+                    ${percentage}%
+                </strong>
+            </p>
+
+            <progress
+                value="${percentage}"
+                max="100">
+            </progress>
+
+        `;
+
+        weeklyDays.appendChild(
+            dayCard
+        );
+
+    }
+
+
+    // =================================
+    // WEEKLY AVERAGE
+    // =================================
+
+    let average =
+        Math.round(
+            totalProgress / 7
+        );
+
+    weeklyAverage.innerHTML =
+        `📊 Weekly Average : ${average}%`;
+
+}
+
+
+// =====================================
 // AUTO LOAD BASED ON PAGE
 // =====================================
 
@@ -865,8 +804,9 @@ document.addEventListener(
     "DOMContentLoaded",
     function() {
 
-
-        // Checklist page
+        // =================================
+        // CHECKLIST PAGE
+        // =================================
 
         if (
             document.getElementById(
@@ -884,39 +824,59 @@ document.addEventListener(
         }
 
 
-        // History page
+        // =================================
+        // HISTORY PAGE
+        // =================================
 
         if (
-    document.getElementById(
-        "historyList"
-    )
-) {
+            document.getElementById(
+                "historyList"
+            )
+        ) {
 
-    loadHistory();
+            loadHistory();
 
-    loadWeeklyReport();
+            loadWeeklyReport();
 
-}
+        }
 
     }
 );
+
 
 // =====================================
 // REGISTER SERVICE WORKER
 // =====================================
 
-if ("serviceWorker" in navigator) {
+if (
+    "serviceWorker" in navigator
+) {
 
-    window.addEventListener("load", () => {
+    window.addEventListener(
+        "load",
+        () => {
 
-        navigator.serviceWorker.register("service-worker.js")
-            .then(() => {
-                console.log("Service Worker Registered ✅");
-            })
-            .catch(error => {
-                console.log("Service Worker Error:", error);
-            });
+            navigator.serviceWorker
+                .register(
+                    "service-worker.js"
+                )
+                .then(() => {
 
-    });
+                    console.log(
+                        "Service Worker Registered ✅"
+                    );
+
+                })
+                .catch(error => {
+
+                    console.log(
+                        "Service Worker Error:",
+                        error
+                    );
+
+                });
+
+        }
+    );
 
 }
