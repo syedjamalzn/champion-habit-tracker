@@ -15,55 +15,51 @@
 
 </head>
 
-
 <body>
 
-    <div class="container">
+<div class="container">
 
-        <!-- =====================================
-             HEADER
-        ====================================== -->
+    <!-- =====================================
+         HEADER
+    ====================================== -->
 
-        <h1>
-            🏆 Champion Habit Tracker
-        </h1>
+    <h1>
+        🏆 Champion Habit Tracker
+    </h1>
 
+    <h2 id="welcomeText">
+        Welcome 👋
+    </h2>
 
-        <h2 id="welcomeText">
-            Welcome 👋
-        </h2>
-
-
-        <hr>
+    <hr>
 
 
-        <!-- =====================================
-             REPORT HISTORY
-        ====================================== -->
+    <!-- =====================================
+         REPORT HISTORY
+    ====================================== -->
 
-        <h2>
-            📅 Report History
-        </h2>
+    <h2>
+        📅 Report History
+    </h2>
+
+    <div id="historyList">
+
+        <!-- Reports will be loaded here -->
+
+    </div>
 
 
-        <div id="historyList">
-
-            <!-- Reports will be loaded here -->
-
-        </div>
+    <hr>
 
 
-        <hr>
+    <!-- =====================================
+         WEEKLY REPORT
+    ====================================== -->
 
-       <!-- =====================================
-     WEEKLY REPORT
-====================================== -->
+    <h2>
+        📊 WEEKLY REPORT
+    </h2>
 
-<div class="section-title">
-    📊 WEEKLY REPORT
-</div>
-
-<div id="weeklyReport">
 
     <!-- WEEK NAVIGATION -->
 
@@ -72,18 +68,26 @@
         <button
             id="previousWeek"
             type="button">
+
             ◀ Previous Week
+
         </button>
 
+
         <strong id="weekTitle">
+
             Current Week
+
         </strong>
+
 
         <button
             id="nextWeek"
             type="button"
             disabled>
+
             Next Week ▶
+
         </button>
 
     </div>
@@ -92,79 +96,86 @@
     <!-- WEEKLY DAYS -->
 
     <div id="weeklyDays">
+
         <!-- Weekly data will appear here -->
+
     </div>
 
 
     <!-- WEEKLY AVERAGE -->
 
     <h3 id="weeklyAverage">
+
         📊 Weekly Average : 0%
+
     </h3>
 
-</div>
+
+    <hr>
+
 
     <!-- =====================================
-     MONTHLY REPORT
-====================================== -->
+         MONTHLY REPORT
+    ====================================== -->
 
-<div
-    class="section-title"
-    id="monthlyTitle">
+    <h2>
+        📅 MONTHLY REPORT
+    </h2>
 
-    📅 MONTHLY REPORT
-
-</div>
-
-<div id="monthlyReport">
 
     <p>
         Select Month:
     </p>
 
+
     <select id="monthSelector">
+
         <option value="">
             Loading months...
         </option>
+
     </select>
 
+
     <div id="monthlyDays">
+
         <!-- Monthly reports appear here -->
+
     </div>
+
 
     <h3 id="monthlyAverage">
+
         📊 Monthly Average : 0%
+
     </h3>
 
-</div>
 
-</div>
-
-
-        <!-- =====================================
-             BACK TO CHECKLIST
-        ====================================== -->
-
-        <button
-            onclick="window.location='checklist.html'">
-
-            ⬅️ Back to Today's Checklist
-
-        </button>
-
-
-    </div>
+    <hr>
 
 
     <!-- =====================================
-         JAVASCRIPT
+         BACK TO CHECKLIST
     ====================================== -->
 
-    <script src="script.js"></script>
-   <script>
-alert("HISTORY PAGE LOADED");
-</script>
-</script>
+    <button
+        type="button"
+        onclick="window.location='checklist.html'">
+
+        ⬅️ Back to Today's Checklist
+
+    </button>
+
+
+</div>
+
+
+<!-- =====================================
+     JAVASCRIPT
+====================================== -->
+
+<script src="script.js"></script>
+
 </body>
 
 </html>
