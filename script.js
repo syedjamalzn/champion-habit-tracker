@@ -757,7 +757,7 @@ function loadWeeklyReport() {
 // MONTHLY REPORT
 // =====================================
 
-function loadMonthlyReport(selectedMonth = null) {
+function loadMonthlyReport() {
 
     let user =
         localStorage.getItem("user");
@@ -766,6 +766,10 @@ function loadMonthlyReport(selectedMonth = null) {
         return;
     }
 
+    let monthSelector =
+        document.getElementById(
+            "monthSelector"
+        );
 
     let monthlyDays =
         document.getElementById(
@@ -777,24 +781,18 @@ function loadMonthlyReport(selectedMonth = null) {
             "monthlyAverage"
         );
 
-    let monthSelector =
-        document.getElementById(
-            "monthSelector"
-        );
-
-
     if (
+        !monthSelector ||
         !monthlyDays ||
-        !monthlyAverage ||
-        !monthSelector
+        !monthlyAverage
     ) {
         return;
     }
 
 
-    // =================================
+    // =====================================
     // MONTH NAMES
-    // =================================
+    // =====================================
 
     let monthNames = [
 
@@ -814,9 +812,9 @@ function loadMonthlyReport(selectedMonth = null) {
     ];
 
 
-    // =================================
+    // =====================================
     // TODAY
-    // =================================
+    // =====================================
 
     let today =
         new Date();
@@ -825,219 +823,433 @@ function loadMonthlyReport(selectedMonth = null) {
         today.getFullYear();
 
     let currentMonth =
-        today.getMonth();
+        today.getMonth() + 1;
 
     let currentDay =
         today.getDate();
 
 
-    // =================================
-    // CREATE DROPDOWN
-    // =================================
+    // =====================================
+    // CREATE JANUARY → DECEMBER DROPDOWN
+    // =====================================
 
-    if (
-        monthSelector.options.length !== 12
+    monthSelector.innerHTML = "";
+
+    for (
+        let month = 1;
+        month <= 12;
+        month++
     ) {
 
-        monthSelector.innerHTML = "";
+        let option =
+            document.createElement(
+                "option"
+            );
 
-        for (
-            let i = 0;
-            i < 12;
-            i++
+        let monthNumber =
+            String(month)
+                .padStart(2, "0");
+
+        option.value =
+            `${currentYear}-${monthNumber}`;
+
+        option.textContent =
+            `${monthNames[month - 1]} ${currentYear}`;
+
+        monthSelector.appendChild(
+            option
+        );
+
+    }
+
+
+    // =====================================
+    // DEFAULT = CURRENT MONTH
+    // =====================================
+
+    monthSelector.value =
+        `${currentYear}-${String(currentMonth).padStart(2, "0")}`;
+
+
+    // =====================================
+    // DISPLAY SELECTED MONTH
+    // =====================================
+
+    function displaySelectedMonth() {
+
+        let selectedMonth =
+            monthSelector.value;
+
+        if (!selectedMonth) {
+            return;
+        }
+
+
+        // =================================
+        // GET YEAR + MONTH
+        // =================================
+
+        let parts =
+            selectedMonth.split("-");
+
+        let year =
+            Number(parts[0]);
+
+        let month =
+            Number(parts[1]);
+
+
+        // =================================
+        // CLEAR OLD DATA
+        // =================================
+
+        monthlyDays.innerHTML = "";
+
+        monthlyAverage.innerHTML =
+            "📊 Monthly Average : 0%";
+
+
+        // =================================
+        // FUTURE MONTH
+        // =================================
+
+        if (
+            year > currentYear ||
+            (
+                year === currentYear &&
+                month > currentMonth
+            )
         ) {
 
-            let option =
-                document.createElement(
-                    "option"
+            monthlyDays.innerHTML = `
+
+                <div class="history-card">
+
+                    <h3>
+                        📭 No Report Found
+                    </h3>
+
+                    <p>
+                        ${monthNames[month - 1]}
+                        ${year}
+                        is not available yet.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        // =================================
+        // NUMBER OF DAYS TO SHOW
+        // =================================
+
+        let daysInMonth =
+            new Date(
+                year,
+                month,
+                0
+            ).getDate();
+
+        let lastDayToShow =
+            daysInMonth;
+
+
+        // =================================
+        // CURRENT MONTH
+        // SHOW ONLY UNTIL TODAY
+        // =================================
+
+        if (
+            year === currentYear &&
+            month === currentMonth
+        ) {
+
+            lastDayToShow =
+                currentDay;
+
+        }
+
+
+        // =================================
+        // TRACK AVERAGE
+        // =================================
+
+        let totalProgress = 0;
+
+        let trackedDays = 0;
+
+
+        // =================================
+        // DAY NAMES
+        // =================================
+
+        let dayNames = [
+
+            "Sun",
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu",
+            "Fri",
+            "Sat"
+
+        ];
+
+
+        // =================================
+        // DISPLAY DAYS
+        // =================================
+
+        for (
+            let day = 1;
+            day <= lastDayToShow;
+            day++
+        ) {
+
+            let monthNumber =
+                String(month)
+                    .padStart(2, "0");
+
+            let dateNumber =
+                String(day)
+                    .padStart(2, "0");
+
+
+            // =================================
+            // REPORT KEY
+            // =================================
+
+            let reportKey =
+                `${user}_${year}_${monthNumber}_${dateNumber}`;
+
+
+            let savedReport =
+                localStorage.getItem(
+                    reportKey
                 );
 
-            option.value = i;
 
-            option.textContent =
-                monthNames[i];
+            let percentage = 0;
 
-            monthSelector.appendChild(
-                option
+            let completed = 0;
+
+            let hasReport = false;
+
+
+            // =================================
+            // LOAD REPORT
+            // =================================
+
+            if (savedReport) {
+
+                try {
+
+                    let report =
+                        JSON.parse(
+                            savedReport
+                        );
+
+
+                    let result =
+                        calculateProgress(
+                            report
+                        );
+
+
+                    percentage =
+                        result.percentage;
+
+                    completed =
+                        result.completed;
+
+                    hasReport = true;
+
+
+                } catch (error) {
+
+                    console.log(
+                        "Invalid report:",
+                        reportKey
+                    );
+
+                }
+
+            }
+
+
+            // =================================
+            // MONTHLY AVERAGE
+            // ONLY SAVED REPORT DAYS
+            // =================================
+
+            if (hasReport) {
+
+                totalProgress +=
+                    percentage;
+
+                trackedDays++;
+
+            }
+
+
+            // =================================
+            // GET DAY NAME
+            // =================================
+
+            let currentDate =
+                new Date(
+                    year,
+                    month - 1,
+                    day
+                );
+
+
+            let dayName =
+                dayNames[
+                    currentDate.getDay()
+                ];
+
+
+            // =================================
+            // STATUS
+            // =================================
+
+            let statusText;
+
+            if (hasReport) {
+
+                statusText =
+                    `Completed : ${completed} / ${totalHabits}`;
+
+            } else {
+
+                statusText =
+                    "📭 No Report Saved";
+
+            }
+
+
+            // =================================
+            // CREATE DAY CARD
+            // =================================
+
+            let dayCard =
+                document.createElement(
+                    "div"
+                );
+
+
+            dayCard.className =
+                "history-card";
+
+
+            dayCard.innerHTML = `
+
+                <h3>
+                    📅
+                    ${String(day).padStart(2, "0")}
+                    ${monthNames[month - 1]}
+                    ${year}
+                </h3>
+
+                <p>
+                    ${dayName}
+                </p>
+
+                <p>
+                    ${statusText}
+                </p>
+
+                <p>
+                    Progress :
+                    <strong>
+                        ${percentage}%
+                    </strong>
+                </p>
+
+                <progress
+                    value="${percentage}"
+                    max="100">
+                </progress>
+
+            `;
+
+
+            monthlyDays.appendChild(
+                dayCard
             );
 
         }
 
-    }
+
+        // =================================
+        // NO REPORT FOUND FOR THIS MONTH
+        // =================================
+
+        if (trackedDays === 0) {
+
+            monthlyDays.innerHTML = `
+
+                <div class="history-card">
+
+                    <h3>
+                        📭 No Report Found
+                    </h3>
+
+                    <p>
+                        No saved reports for
+                        ${monthNames[month - 1]}
+                        ${year}.
+                    </p>
+
+                </div>
+
+            `;
+
+            monthlyAverage.innerHTML =
+                "📊 Monthly Average : 0%";
+
+            return;
+
+        }
 
 
-    // =================================
-    // DEFAULT MONTH = CURRENT MONTH
-    // =================================
+        // =================================
+        // MONTHLY AVERAGE
+        // =================================
 
-    let selectedMonthNumber;
-
-
-    if (selectedMonth === null) {
-
-        selectedMonthNumber =
-            currentMonth;
-
-        monthSelector.value =
-            currentMonth;
-
-    } else {
-
-        selectedMonthNumber =
-            Number(selectedMonth);
-
-        monthSelector.value =
-            selectedMonthNumber;
-
-    }
-
-
-    // =================================
-    // DISPLAY SELECTED MONTH
-    // =================================
-
-    let monthlyTitle =
-        document.getElementById(
-            "monthlyTitle"
-        );
-
-    if (monthlyTitle) {
-
-        monthlyTitle.innerHTML =
-            `📅 ${monthNames[selectedMonthNumber]} ${currentYear}`;
-
-    }
-
-
-    monthlyDays.innerHTML = "";
-
-
-    // =================================
-    // GET NUMBER OF DAYS
-    // =================================
-
-    let daysInMonth =
-        new Date(
-            currentYear,
-            selectedMonthNumber + 1,
-            0
-        ).getDate();
-
-
-    // =================================
-    // FUTURE MONTH
-    // =================================
-
-    if (
-        selectedMonthNumber >
-        currentMonth
-    ) {
-
-        monthlyDays.innerHTML = `
-
-            <div class="history-card">
-
-                <h3>
-                    📭 No Report Found
-                </h3>
-
-                <p>
-                    No reports available for
-                    ${monthNames[selectedMonthNumber]}
-                    ${currentYear}.
-                </p>
-
-            </div>
-
-        `;
-
-        monthlyAverage.innerHTML =
-            `📊 Monthly Average : 0%`;
-
-        return;
-
-    }
-
-
-    // =================================
-    // CURRENT MONTH
-    // → ONLY UP TO TODAY
-    // =================================
-
-    let daysToShow =
-        daysInMonth;
-
-
-    if (
-        selectedMonthNumber ===
-        currentMonth
-    ) {
-
-        daysToShow =
-            currentDay;
-
-    }
-
-
-    // =================================
-    // DAY NAMES
-    // =================================
-
-    let dayNames = [
-
-        "Sun",
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat"
-
-    ];
-
-
-    let totalProgress = 0;
-
-    let reportCount = 0;
-
-
-    // =================================
-    // DISPLAY DAYS
-    // =================================
-
-    for (
-        let day = 1;
-        day <= daysToShow;
-        day++
-    ) {
-
-        let monthNumber =
-            String(
-                selectedMonthNumber + 1
-            ).padStart(2, "0");
-
-
-        let dateNumber =
-            String(day)
-                .padStart(2, "0");
-
-
-        let reportKey =
-            `${user}_${currentYear}_${monthNumber}_${dateNumber}`;
-
-
-        let savedReport =
-            localStorage.getItem(
-                reportKey
+        let average =
+            Math.round(
+                totalProgress /
+                trackedDays
             );
 
 
-        let percentage = 0;
+        monthlyAverage.innerHTML =
+            `📊 Monthly Average : ${average}%`;
 
-        let completed = 0;
+    }
 
-        let hasReport = false;
 
+    // =====================================
+    // DROPDOWN CHANGE
+    // =====================================
+
+    monthSelector.onchange =
+        displaySelectedMonth;
+
+
+    // =====================================
+    // SHOW CURRENT MONTH
+    // =====================================
+
+    displaySelectedMonth();
+
+}
 
         // =================================
         // LOAD REPORT
