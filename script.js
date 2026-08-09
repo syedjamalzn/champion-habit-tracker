@@ -1,8 +1,7 @@
 // =====================================
-// CHAMPION HABIT TRACKER v1.1
+// CHAMPION HABIT TRACKER v1.3
 // SCRIPT.JS
 // =====================================
-
 
 // =====================================
 // HABIT LIST
@@ -44,8 +43,6 @@ const habitIds = [
     "sleepHours"
 ];
 
-
-// Total number of habits
 const totalHabits = habitIds.length;
 
 
@@ -397,7 +394,6 @@ function loadHistory() {
 
     let reports = [];
 
-
     // =================================
     // COLLECT USER REPORTS
     // =================================
@@ -418,14 +414,11 @@ function loadHistory() {
             )
         ) {
 
-            // Ignore old _report key
             if (
                 key ===
                 `${user}_report`
             ) {
-
                 continue;
-
             }
 
             let savedReport =
@@ -451,11 +444,8 @@ function loadHistory() {
                 );
 
             }
-
         }
-
     }
-
 
     // =================================
     // LATEST DATE FIRST
@@ -468,7 +458,6 @@ function loadHistory() {
         );
 
     });
-
 
     // =================================
     // DISPLAY HISTORY
@@ -563,11 +552,6 @@ function loadHistory() {
 
     });
 
-
-    // =================================
-    // NO HISTORY MESSAGE
-    // =================================
-
     if (
         reports.length === 0
     ) {
@@ -590,7 +574,6 @@ function loadHistory() {
         `;
 
     }
-
 }
 
 
@@ -659,11 +642,6 @@ function loadWeeklyReport() {
 
     ];
 
-
-    // =================================
-    // MONDAY → SUNDAY
-    // =================================
-
     for (
         let i = 0;
         i < 7;
@@ -700,11 +678,6 @@ function loadWeeklyReport() {
 
         let percentage = 0;
 
-
-        // =================================
-        // LOAD REPORT
-        // =================================
-
         if (savedReport) {
 
             try {
@@ -733,18 +706,8 @@ function loadWeeklyReport() {
 
         }
 
-
-        // =================================
-        // ADD TO WEEKLY TOTAL
-        // =================================
-
         totalProgress +=
             percentage;
-
-
-        // =================================
-        // CREATE DAY CARD
-        // =================================
 
         let dayCard =
             document.createElement(
@@ -780,11 +743,6 @@ function loadWeeklyReport() {
 
     }
 
-
-    // =================================
-    // WEEKLY AVERAGE
-    // =================================
-
     let average =
         Math.round(
             totalProgress / 7
@@ -792,7 +750,401 @@ function loadWeeklyReport() {
 
     weeklyAverage.innerHTML =
         `📊 Weekly Average : ${average}%`;
+}
 
+
+// =====================================
+// MONTHLY REPORT
+// =====================================
+
+function loadMonthlyReport() {
+
+    let user =
+        localStorage.getItem("user");
+
+    if (!user) {
+        return;
+    }
+
+    let monthSelector =
+        document.getElementById(
+            "monthSelector"
+        );
+
+    let monthlyDays =
+        document.getElementById(
+            "monthlyDays"
+        );
+
+    let monthlyAverage =
+        document.getElementById(
+            "monthlyAverage"
+        );
+
+    if (
+        !monthSelector ||
+        !monthlyDays ||
+        !monthlyAverage
+    ) {
+        return;
+    }
+
+    // =================================
+    // FIND ALL AVAILABLE MONTHS
+    // =================================
+
+    let availableMonths = [];
+
+    for (
+        let i = 0;
+        i < localStorage.length;
+        i++
+    ) {
+
+        let key =
+            localStorage.key(i);
+
+        if (
+            !key ||
+            !key.startsWith(
+                user + "_"
+            )
+        ) {
+            continue;
+        }
+
+        if (
+            key ===
+            `${user}_report`
+        ) {
+            continue;
+        }
+
+        let parts =
+            key.split("_");
+
+        if (parts.length !== 4) {
+            continue;
+        }
+
+        let year =
+            parts[1];
+
+        let month =
+            parts[2];
+
+        let monthKey =
+            `${year}-${month}`;
+
+        if (
+            !availableMonths.includes(
+                monthKey
+            )
+        ) {
+
+            availableMonths.push(
+                monthKey
+            );
+
+        }
+    }
+
+    // =================================
+    // NO REPORTS
+    // =================================
+
+    if (
+        availableMonths.length === 0
+    ) {
+
+        monthSelector.innerHTML =
+            `<option value="">No reports yet</option>`;
+
+        monthlyDays.innerHTML = "";
+
+        monthlyAverage.innerHTML =
+            "📊 Monthly Average : 0%";
+
+        return;
+    }
+
+    // =================================
+    // SORT LATEST MONTH FIRST
+    // =================================
+
+    availableMonths.sort(function(a, b) {
+
+        return b.localeCompare(a);
+
+    });
+
+    // =================================
+    // CREATE MONTH DROPDOWN
+    // =================================
+
+    monthSelector.innerHTML = "";
+
+    let monthNames = [
+
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+
+    ];
+
+    availableMonths.forEach(function(
+        monthKey
+    ) {
+
+        let parts =
+            monthKey.split("-");
+
+        let year =
+            parts[0];
+
+        let month =
+            Number(parts[1]);
+
+        let option =
+            document.createElement(
+                "option"
+            );
+
+        option.value =
+            monthKey;
+
+        option.textContent =
+            `${monthNames[month - 1]} ${year}`;
+
+        monthSelector.appendChild(
+            option
+        );
+
+    });
+
+    // =================================
+    // DISPLAY SELECTED MONTH
+    // =================================
+
+    function displaySelectedMonth() {
+
+        let selectedMonth =
+            monthSelector.value;
+
+        if (!selectedMonth) {
+            return;
+        }
+
+        let parts =
+            selectedMonth.split("-");
+
+        let year =
+            Number(parts[0]);
+
+        let month =
+            Number(parts[1]);
+
+        let daysInMonth =
+            new Date(
+                year,
+                month,
+                0
+            ).getDate();
+
+        monthlyDays.innerHTML = "";
+
+        let totalProgress = 0;
+
+        let trackedDays = 0;
+
+        for (
+            let day = 1;
+            day <= daysInMonth;
+            day++
+        ) {
+
+            let monthNumber =
+                String(month)
+                    .padStart(2, "0");
+
+            let dateNumber =
+                String(day)
+                    .padStart(2, "0");
+
+            let reportKey =
+                `${user}_${year}_${monthNumber}_${dateNumber}`;
+
+            let savedReport =
+                localStorage.getItem(
+                    reportKey
+                );
+
+            let percentage = 0;
+
+            let completed = 0;
+
+            let hasReport = false;
+
+            if (savedReport) {
+
+                try {
+
+                    let report =
+                        JSON.parse(
+                            savedReport
+                        );
+
+                    let result =
+                        calculateProgress(
+                            report
+                        );
+
+                    percentage =
+                        result.percentage;
+
+                    completed =
+                        result.completed;
+
+                    hasReport = true;
+
+                } catch (error) {
+
+                    console.log(
+                        "Invalid report:",
+                        reportKey
+                    );
+
+                }
+
+            }
+
+            // Only saved days are included
+            // in monthly average.
+
+            if (hasReport) {
+
+                totalProgress +=
+                    percentage;
+
+                trackedDays++;
+
+            }
+
+            let currentDate =
+                new Date(
+                    year,
+                    month - 1,
+                    day
+                );
+
+            let dayNames = [
+
+                "Sun",
+                "Mon",
+                "Tue",
+                "Wed",
+                "Thu",
+                "Fri",
+                "Sat"
+
+            ];
+
+            let dayName =
+                dayNames[
+                    currentDate.getDay()
+                ];
+
+            let dayCard =
+                document.createElement(
+                    "div"
+                );
+
+            dayCard.className =
+                "history-card";
+
+            let statusText =
+                hasReport
+                    ? `Completed : ${completed} / ${totalHabits}`
+                    : "No Report Saved";
+
+            dayCard.innerHTML = `
+
+                <h3>
+                    📅 ${String(day).padStart(2, "0")}
+                    ${monthNames[month - 1]}
+                    ${year}
+                </h3>
+
+                <p>
+                    ${dayName}
+                </p>
+
+                <p>
+                    ${statusText}
+                </p>
+
+                <p>
+                    Progress :
+                    <strong>
+                        ${percentage}%
+                    </strong>
+                </p>
+
+                <progress
+                    value="${percentage}"
+                    max="100">
+                </progress>
+
+            `;
+
+            monthlyDays.appendChild(
+                dayCard
+            );
+
+        }
+
+        // =================================
+        // MONTHLY AVERAGE
+        // =================================
+
+        let average = 0;
+
+        if (trackedDays > 0) {
+
+            average =
+                Math.round(
+                    totalProgress /
+                    trackedDays
+                );
+
+        }
+
+        monthlyAverage.innerHTML =
+            `📊 Monthly Average : ${average}%`;
+
+    }
+
+    // =================================
+    // CHANGE MONTH
+    // =================================
+
+    monthSelector.onchange =
+        displaySelectedMonth;
+
+    // =================================
+    // SHOW FIRST MONTH
+    // =================================
+
+    displaySelectedMonth();
 }
 
 
@@ -823,7 +1175,6 @@ document.addEventListener(
 
         }
 
-
         // =================================
         // HISTORY PAGE
         // =================================
@@ -837,6 +1188,8 @@ document.addEventListener(
             loadHistory();
 
             loadWeeklyReport();
+
+            loadMonthlyReport();
 
         }
 
