@@ -1931,6 +1931,20 @@ document.addEventListener(
     }
 );
 
+    // =================================
+    // DASHBOARD PAGE
+    // =================================
+
+    if (
+        document.getElementById(
+            "todayCompleted"
+        )
+    ) {
+
+        loadDashboard();
+
+    }
+
 // =====================================
 // DASHBOARD REPORT
 // =====================================
