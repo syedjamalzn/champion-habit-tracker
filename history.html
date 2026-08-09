@@ -9,13 +9,140 @@
         name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>
-        Champion Habit Tracker - History
-    </title>
+    <title>Champion Habit Tracker - History</title>
 
     <link
         rel="stylesheet"
         href="style.css">
+
+    <style>
+
+        /* =====================================
+           MONTH CALENDAR
+        ===================================== */
+
+        .calendar-container {
+            margin-top: 20px;
+        }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .calendar-header div {
+            text-align: center;
+            font-weight: bold;
+            padding: 8px 2px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .calendar-day {
+            min-height: 65px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 6px;
+            text-align: center;
+            cursor: pointer;
+            background: #fff;
+            transition: 0.2s;
+        }
+
+        .calendar-day:hover {
+            transform: scale(1.03);
+        }
+
+        .calendar-day.empty {
+            border: none;
+            background: transparent;
+            cursor: default;
+        }
+
+        .calendar-day.today {
+            border: 2px solid #2196f3;
+        }
+
+        .calendar-day.has-report {
+            background: #e8f5e9;
+            border-color: #4caf50;
+        }
+
+        .calendar-day.no-report {
+            background: #fafafa;
+        }
+
+        .calendar-date {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .calendar-progress {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .calendar-dot {
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        /* =====================================
+           SELECTED DATE REPORT
+        ===================================== */
+
+        #selectedDateReport {
+            margin-top: 20px;
+        }
+
+        .selected-date-card {
+            padding: 18px;
+            border-radius: 12px;
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+        }
+
+        .selected-date-card progress {
+            width: 100%;
+        }
+
+        /* =====================================
+           MOBILE
+        ===================================== */
+
+        @media (max-width: 600px) {
+
+            .calendar-grid,
+            .calendar-header {
+                gap: 3px;
+            }
+
+            .calendar-day {
+                min-height: 55px;
+                padding: 4px;
+            }
+
+            .calendar-date {
+                font-size: 15px;
+            }
+
+            .calendar-progress {
+                font-size: 10px;
+            }
+
+            .calendar-dot {
+                font-size: 9px;
+            }
+
+        }
+
+    </style>
 
 </head>
 
@@ -23,6 +150,7 @@
 <body>
 
 <div class="container">
+
 
     <!-- =====================================
          HEADER
@@ -32,24 +160,27 @@
         🏆 Champion Habit Tracker
     </h1>
 
+
     <h2 id="welcomeText">
         Welcome 👋
     </h2>
+
 
     <hr>
 
 
     <!-- =====================================
-         REPORT HISTORY
+         DAILY REPORT HISTORY
     ====================================== -->
 
     <h2>
         📅 Report History
     </h2>
 
+
     <div id="historyList">
 
-        <!-- Reports will appear here -->
+        <!-- Daily reports appear here -->
 
     </div>
 
@@ -102,7 +233,7 @@
 
     <div id="weeklyDays">
 
-        <!-- Weekly data will appear here -->
+        <!-- Weekly data appears here -->
 
     </div>
 
@@ -128,8 +259,6 @@
     </h2>
 
 
-    <!-- MONTH SELECTOR -->
-
     <p>
         Select Month:
     </p>
@@ -145,34 +274,36 @@
 
 
     <!-- =====================================
-         MONTHLY CALENDAR
+         CALENDAR
     ====================================== -->
 
-    <div
-        id="monthlyCalendar"
-        class="monthly-calendar">
-
-        <!-- Calendar will appear here -->
-
-    </div>
+    <div class="calendar-container">
 
 
-    <!-- =====================================
-         SELECTED DATE REPORT
-    ====================================== -->
+        <!-- DAYS HEADER -->
 
-    <div
-        id="selectedDateReport"
-        class="selected-date-report">
+        <div class="calendar-header">
 
-        <h3>
-            📅 Select a date
-        </h3>
+            <div>Sun</div>
+            <div>Mon</div>
+            <div>Tue</div>
+            <div>Wed</div>
+            <div>Thu</div>
+            <div>Fri</div>
+            <div>Sat</div>
 
-        <p>
-            Click a date from the calendar
-            to view the report.
-        </p>
+        </div>
+
+
+        <!-- CALENDAR DATES -->
+
+        <div id="monthlyCalendar"
+             class="calendar-grid">
+
+            <!-- Calendar generated by JavaScript -->
+
+        </div>
+
 
     </div>
 
@@ -186,6 +317,17 @@
         📊 Monthly Average : 0%
 
     </h3>
+
+
+    <!-- =====================================
+         SELECTED DATE REPORT
+    ====================================== -->
+
+    <div id="selectedDateReport">
+
+        <!-- Selected date report appears here -->
+
+    </div>
 
 
     <hr>
@@ -212,6 +354,7 @@
 ====================================== -->
 
 <script src="script.js"></script>
+
 
 </body>
 
