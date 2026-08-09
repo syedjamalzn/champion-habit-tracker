@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Champion Habit Tracker</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- =====================================
+             HEADER
+        ====================================== -->
+
+        <h1>🏆 Champion Habit Tracker</h1>
+
+        <h2 id="welcomeText">
+            Welcome 👋
+        </h2>
+
+
+        <!-- =====================================
+             DATE & USER
+        ====================================== -->
+
+        <div class="report-info">
+
+            <p>
+                👤 <strong>Name:</strong>
+                <span id="userName"></span>
+            </p>
+
+            <p>
+                📅 <strong>Date:</strong>
+                <span id="todayDate"></span>
+            </p>
+
+        </div>
+
+ <!-- =====================================
+             NIGHT
+        ====================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                🌙 NIGHT - Previous Night
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="nightMilk"
+                    onchange="updateProgress()">
+
+                <label for="nightMilk">
+                    Milk (Optional)
+                </label>
+
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="sleepBefore"
+                    onchange="updateProgress()">
+
+                <label for="sleepBefore">
+                    Sleep Before 10:30
+                </label>
+
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="sleepHours"
+                    onchange="updateProgress()">
+
+                <label for="sleepHours">
+                    7–8 Hours Sleep
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <hr>
+
+
+        <!-- =====================================
+             MORNING
+        ====================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                🌅 MORNING
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="wakeUp"
+                    onchange="updateProgress()">
+
+                <label for="wakeUp">
+                    WakeUp Before 6:30 AM
+                </label>
+
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="water"
+                    onchange="updateProgress()">
+
+                <label for="water">
+                    Warm Water + Lemon
+                </label>
+
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="milk"
+                    onchange="updateProgress()">
+
+                <label for="milk">
+                    Milk (200–250 ml)
+                </label>
+
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="eggs"
+                    onchange="updateProgress()">
+
+                <label for="eggs">
+                    Eggs (2–3)
+                </label>
+
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="breakfast"
+                    onchange="updateProgress()">
+
+                <label for="breakfast">
+                    Healthy Breakfast
+                </label>
+
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="protein"
+                    onchange="updateProgress()">
+
+                <label for="protein">
+                    Protein Completed
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             GYM
+        ====================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                🏋️ GYM
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="warmUp"
+                    onchange="updateProgress()">
+
+                <label for="warmUp">
+                    Warm-up (5–10 min)
+                </label>
+
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="workout"
+                    onchange="updateProgress()">
+
+                <label for="workout">
+                    Workout Completed
+                </label>
+
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="correctForm"
+                    onchange="updateProgress()">
+
+                <label for="correctForm">
+                    Correct Form
+                </label>
+
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="stretching"
+                    onchange="updateProgress()">
+
+                <label for="stretching">
+                    Stretching
+                </label>
+
+            </div>
+
+        </div>
+
+                <!-- =====================================
+             NUTRITION
+        ====================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                🥗 NUTRITION
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="lunch"
+                    onchange="updateProgress()">
+
+                <label for="lunch">
+                    Lunch Completed
+                </label>
+
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="eveningSnack"
+                    onchange="updateProgress()">
+
+                <label for="eveningSnack">
+                    Evening Snack
+                </label>
+
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="fruits"
+                    onchange="updateProgress()">
+
+                <label for="fruits">
+                    Fruits
+                </label>
+
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="dinner"
+                    onchange="updateProgress()">
+
+                <label for="dinner">
+                    Dinner Completed
+                </label>
+
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="noJunkFood"
+                    onchange="updateProgress()">
+
+                <label for="noJunkFood">
+                    No Junk Food
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             HYDRATION
+        ====================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                💧 HYDRATION
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="hydration"
+                    onchange="updateProgress()">
+
+                <label for="hydration">
+                    3 L Goal
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             DAILY ACTIVITY
+        ====================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                🚶 DAILY ACTIVITY
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="steps"
+                    onchange="updateProgress()">
+
+                <label for="steps">
+                    8,000+ Steps
+                </label>
+
+            </div>
+
+
+            <div class="habit-item">
+
+                <input
+                    type="checkbox"
+                    id="walking"
+                    onchange="updateProgress()">
+
+                <label for="walking">
+                    15–20 min Walking
+                </label>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+
+        <!-- =====================================
+             DAILY STATUS
+        ====================================== -->
+
+        <div class="section">
+
+            <div class="section-title">
+                📊 DAILY STATUS
+            </div>
+
+
+            <h3 id="completedText">
+                Completed : 0 / 21
+            </h3>
+
+
+            <h3 id="percentageText">
+                Progress : 0%
+            </h3>
+
+
+            <progress
+                id="progressBar"
+                value="0"
+                max="100">
+            </progress>
+
+        </div>
+
+
+        <!-- =====================================
+             SAVE REPORT
+        ====================================== -->
+
+        <button onclick="saveReport()">
+
+            💾 Save Report
+
+        </button>
+
+
+        <!-- =====================================
+             VIEW HISTORY
+        ====================================== -->
+
+        <button onclick="window.location='history.html'">
+
+            📅 View History
+
+        </button>
+
+        <button onclick="window.location='index.html'">
+    ⬅️ Back to Profile
+</button>
+
+
+    </div>
+
+
+    <!-- =====================================
+         JAVASCRIPT
+    ====================================== -->
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
