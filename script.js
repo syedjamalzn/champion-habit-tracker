@@ -1931,6 +1931,679 @@ document.addEventListener(
     }
 );
 
+// =====================================
+// DASHBOARD REPORT
+// =====================================
+
+function loadDashboard() {
+
+    let user =
+        localStorage.getItem("user");
+
+    if (!user) {
+        return;
+    }
+
+
+    // =================================
+    // WELCOME USER
+    // =================================
+
+    let welcomeText =
+        document.getElementById(
+            "welcomeText"
+        );
+
+    if (welcomeText) {
+
+        welcomeText.innerHTML =
+            `Welcome ${user} 👋`;
+
+    }
+
+
+    // =================================
+    // TODAY
+    // =================================
+
+    let today =
+        new Date();
+
+    today.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+
+    let todayYear =
+        today.getFullYear();
+
+    let todayMonth =
+        String(
+            today.getMonth() + 1
+        ).padStart(2, "0");
+
+    let todayDate =
+        String(
+            today.getDate()
+        ).padStart(2, "0");
+
+
+    let todayKey =
+        `${user}_${todayYear}_${todayMonth}_${todayDate}`;
+
+
+    let todayReport =
+        localStorage.getItem(
+            todayKey
+        );
+
+
+    let todayCompleted = 0;
+
+    let todayPercentage = 0;
+
+
+    if (todayReport) {
+
+        try {
+
+            let report =
+                JSON.parse(
+                    todayReport
+                );
+
+            let result =
+                calculateProgress(
+                    report
+                );
+
+            todayCompleted =
+                result.completed;
+
+            todayPercentage =
+                result.percentage;
+
+        } catch (error) {
+
+            console.log(
+                "Invalid dashboard today report:",
+                todayKey
+            );
+
+        }
+
+    }
+
+
+    // =================================
+    // TODAY UI
+    // =================================
+
+    let todayCompletedText =
+        document.getElementById(
+            "todayCompleted"
+        );
+
+    let todayPercentageText =
+        document.getElementById(
+            "todayPercentage"
+        );
+
+    let todayProgressBar =
+        document.getElementById(
+            "todayProgressBar"
+        );
+
+
+    if (todayCompletedText) {
+
+        todayCompletedText.innerHTML =
+            `Completed : ${todayCompleted} / ${totalHabits}`;
+
+    }
+
+
+    if (todayPercentageText) {
+
+        todayPercentageText.innerHTML =
+            `Progress : ${todayPercentage}%`;
+
+    }
+
+
+    if (todayProgressBar) {
+
+        todayProgressBar.value =
+            todayPercentage;
+
+    }
+
+
+    // =================================
+    // CURRENT WEEK
+    // =================================
+
+    let todayDay =
+        today.getDay();
+
+    let currentMonday =
+        new Date(today);
+
+    let difference =
+        todayDay === 0
+            ? -6
+            : 1 - todayDay;
+
+
+    currentMonday.setDate(
+        today.getDate() + difference
+    );
+
+    currentMonday.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+
+    let weeklyTotal =
+        0;
+
+    let weeklyTracked =
+        0;
+
+
+    for (
+        let i = 0;
+        i < 7;
+        i++
+    ) {
+
+        let currentDate =
+            new Date(
+                currentMonday
+            );
+
+        currentDate.setDate(
+            currentMonday.getDate() + i
+        );
+
+        currentDate.setHours(
+            0,
+            0,
+            0,
+            0
+        );
+
+
+        // Don't count future days
+
+        if (
+            currentDate > today
+        ) {
+
+            continue;
+
+        }
+
+
+        let year =
+            currentDate.getFullYear();
+
+        let month =
+            String(
+                currentDate.getMonth() + 1
+            ).padStart(2, "0");
+
+        let date =
+            String(
+                currentDate.getDate()
+            ).padStart(2, "0");
+
+
+        let reportKey =
+            `${user}_${year}_${month}_${date}`;
+
+
+        let savedReport =
+            localStorage.getItem(
+                reportKey
+            );
+
+
+        if (savedReport) {
+
+            try {
+
+                let report =
+                    JSON.parse(
+                        savedReport
+                    );
+
+                let result =
+                    calculateProgress(
+                        report
+                    );
+
+                weeklyTotal +=
+                    result.percentage;
+
+                weeklyTracked++;
+
+            } catch (error) {
+
+                console.log(
+                    "Invalid weekly dashboard report:",
+                    reportKey
+                );
+
+            }
+
+        }
+
+    }
+
+
+    let weeklyAverage = 0;
+
+
+    if (
+        weeklyTracked > 0
+    ) {
+
+        weeklyAverage =
+            Math.round(
+                weeklyTotal /
+                weeklyTracked
+            );
+
+    }
+
+
+    // =================================
+    // WEEKLY UI
+    // =================================
+
+    let dashboardWeeklyAverage =
+        document.getElementById(
+            "dashboardWeeklyAverage"
+        );
+
+    let dashboardWeeklyBar =
+        document.getElementById(
+            "dashboardWeeklyBar"
+        );
+
+
+    if (
+        dashboardWeeklyAverage
+    ) {
+
+        dashboardWeeklyAverage.innerHTML =
+            `Weekly Average : ${weeklyAverage}%`;
+
+    }
+
+
+    if (
+        dashboardWeeklyBar
+    ) {
+
+        dashboardWeeklyBar.value =
+            weeklyAverage;
+
+    }
+
+
+    // =================================
+    // CURRENT MONTH
+    // =================================
+
+    let monthlyTotal =
+        0;
+
+    let monthlyTracked =
+        0;
+
+
+    let daysInMonth =
+        new Date(
+            todayYear,
+            today.getMonth() + 1,
+            0
+        ).getDate();
+
+
+    for (
+        let day = 1;
+        day <= today.getDate();
+        day++
+    ) {
+
+        let month =
+            String(
+                today.getMonth() + 1
+            ).padStart(2, "0");
+
+        let date =
+            String(day)
+                .padStart(2, "0");
+
+
+        let reportKey =
+            `${user}_${todayYear}_${month}_${date}`;
+
+
+        let savedReport =
+            localStorage.getItem(
+                reportKey
+            );
+
+
+        if (savedReport) {
+
+            try {
+
+                let report =
+                    JSON.parse(
+                        savedReport
+                    );
+
+                let result =
+                    calculateProgress(
+                        report
+                    );
+
+                monthlyTotal +=
+                    result.percentage;
+
+                monthlyTracked++;
+
+            } catch (error) {
+
+                console.log(
+                    "Invalid monthly dashboard report:",
+                    reportKey
+                );
+
+            }
+
+        }
+
+    }
+
+
+    let monthlyAverage = 0;
+
+
+    if (
+        monthlyTracked > 0
+    ) {
+
+        monthlyAverage =
+            Math.round(
+                monthlyTotal /
+                monthlyTracked
+            );
+
+    }
+
+
+    // =================================
+    // MONTHLY UI
+    // =================================
+
+    let dashboardMonthlyAverage =
+        document.getElementById(
+            "dashboardMonthlyAverage"
+        );
+
+    let dashboardMonthlyBar =
+        document.getElementById(
+            "dashboardMonthlyBar"
+        );
+
+
+    if (
+        dashboardMonthlyAverage
+    ) {
+
+        dashboardMonthlyAverage.innerHTML =
+            `Monthly Average : ${monthlyAverage}%`;
+
+    }
+
+
+    if (
+        dashboardMonthlyBar
+    ) {
+
+        dashboardMonthlyBar.value =
+            monthlyAverage;
+
+    }
+
+
+    // =================================
+    // OVERALL AVERAGE
+    // =================================
+
+    let overallTotal =
+        0;
+
+    let overallTracked =
+        0;
+
+
+    for (
+        let i = 0;
+        i < localStorage.length;
+        i++
+    ) {
+
+        let key =
+            localStorage.key(i);
+
+
+        if (
+            !key ||
+            !key.startsWith(
+                user + "_"
+            )
+        ) {
+
+            continue;
+
+        }
+
+
+        let parts =
+            key.split("_");
+
+
+        // Only daily report keys
+
+        if (
+            parts.length !== 4
+        ) {
+
+            continue;
+
+        }
+
+
+        let savedReport =
+            localStorage.getItem(
+                key
+            );
+
+
+        try {
+
+            let report =
+                JSON.parse(
+                    savedReport
+                );
+
+            let result =
+                calculateProgress(
+                    report
+                );
+
+            overallTotal +=
+                result.percentage;
+
+            overallTracked++;
+
+        } catch (error) {
+
+            console.log(
+                "Invalid overall dashboard report:",
+                key
+            );
+
+        }
+
+    }
+
+
+    let overallAverage =
+        0;
+
+
+    if (
+        overallTracked > 0
+    ) {
+
+        overallAverage =
+            Math.round(
+                overallTotal /
+                overallTracked
+            );
+
+    }
+
+
+    // =================================
+    // OVERALL UI
+    // =================================
+
+    let overallAverageText =
+        document.getElementById(
+            "overallAverage"
+        );
+
+    let overallProgressBar =
+        document.getElementById(
+            "overallProgressBar"
+        );
+
+
+    if (
+        overallAverageText
+    ) {
+
+        overallAverageText.innerHTML =
+            `Overall Average : ${overallAverage}%`;
+
+    }
+
+
+    if (
+        overallProgressBar
+    ) {
+
+        overallProgressBar.value =
+            overallAverage;
+
+    }
+
+
+    // =================================
+    // CURRENT STREAK
+    // =================================
+
+    let streak = 0;
+
+
+    for (;;) {
+
+        let year =
+            today.getFullYear();
+
+        let month =
+            String(
+                today.getMonth() + 1
+            ).padStart(2, "0");
+
+        let date =
+            String(
+                today.getDate()
+            ).padStart(2, "0");
+
+
+        let reportKey =
+            `${user}_${year}_${month}_${date}`;
+
+
+        let savedReport =
+            localStorage.getItem(
+                reportKey
+            );
+
+
+        if (!savedReport) {
+
+            break;
+
+        }
+
+
+        try {
+
+            JSON.parse(
+                savedReport
+            );
+
+            streak++;
+
+        } catch (error) {
+
+            break;
+
+        }
+
+
+        today.setDate(
+            today.getDate() - 1
+        );
+
+    }
+
+
+    // =================================
+    // STREAK UI
+    // =================================
+
+    let currentStreak =
+        document.getElementById(
+            "currentStreak"
+        );
+
+
+    if (currentStreak) {
+
+        currentStreak.innerHTML =
+            `${streak} Day${streak === 1 ? "" : "s"}`;
+
+    }
+
+}
+
 
 // =====================================
 // REGISTER SERVICE WORKER
