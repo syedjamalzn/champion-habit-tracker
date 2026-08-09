@@ -55,33 +55,54 @@
 
         <hr>
 
-        <!-- =====================================
+       <!-- =====================================
      WEEKLY REPORT
 ====================================== -->
 
-<hr>
+<div class="section-title">
+    📊 WEEKLY REPORT
+</div>
 
-<div class="section">
+<div id="weeklyReport">
 
-    <div class="section-title">
-        📊 WEEKLY REPORT
+    <!-- WEEK NAVIGATION -->
+
+    <div class="weekly-navigation">
+
+        <button
+            id="previousWeek"
+            type="button">
+            ◀ Previous Week
+        </button>
+
+        <strong id="weekTitle">
+            Current Week
+        </strong>
+
+        <button
+            id="nextWeek"
+            type="button"
+            disabled>
+            Next Week ▶
+        </button>
+
     </div>
 
-    <div id="weeklyReport">
 
-        <p>
-            📅 This Week
-        </p>
+    <!-- WEEKLY DAYS -->
 
-        <div id="weeklyDays">
-            <!-- Weekly data will appear here -->
-        </div>
-
-        <h3 id="weeklyAverage">
-            📊 Weekly Average : 0%
-        </h3>
-
+    <div id="weeklyDays">
+        <!-- Weekly data will appear here -->
     </div>
+
+
+    <!-- WEEKLY AVERAGE -->
+
+    <h3 id="weeklyAverage">
+        📊 Weekly Average : 0%
+    </h3>
+
+</div>
 
     <!-- =====================================
      MONTHLY REPORT
