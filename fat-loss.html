@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Champion Habit Tracker - Fat Loss</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css">
+
+</head>
+
+<body>
+
+    <button
+    class="back-button"
+    onclick="history.back()"
+    aria-label="Go back">
+    ←
+</button>
+
+    <div class="container">
+
+        <!-- =====================================
+             BACK BUTTON
+        ====================================== -->
+
+        <button
+            type="button"
+            onclick="history.back()"
+            class="back-button">
+
+            ←
+
+        </button>
+
+
+        <!-- =====================================
+             HEADER
+        ====================================== -->
+
+        <h1>
+            🔥 Fat Loss Workout
+        </h1>
+
+        <p>
+            Select a day to view your workout.
+        </p>
+
+        <hr>
+
+
+        <!-- =====================================
+             MONDAY
+        ====================================== -->
+
+        <div
+            class="dashboard-card"
+            onclick="openWorkoutDay('Monday')">
+
+            <h3>
+                📅 Monday
+            </h3>
+
+            <p>
+                🏋️ Upper Body
+            </p>
+
+        </div>
+
+
+        <!-- =====================================
+             TUESDAY
+        ====================================== -->
+
+        <div
+            class="dashboard-card"
+            onclick="openWorkoutDay('Tuesday')">
+
+            <h3>
+                📅 Tuesday
+            </h3>
+
+            <p>
+                💪 Back & Biceps
+            </p>
+
+        </div>
+
+
+        <!-- =====================================
+             WEDNESDAY
+        ====================================== -->
+
+        <div
+            class="dashboard-card"
+            onclick="openWorkoutDay('Wednesday')">
+
+            <h3>
+                📅 Wednesday
+            </h3>
+
+            <p>
+                🦵 Lower Body
+            </p>
+
+        </div>
+
+
+        <!-- =====================================
+             THURSDAY
+        ====================================== -->
+
+        <div
+            class="dashboard-card"
+            onclick="openWorkoutDay('Thursday')">
+
+            <h3>
+                📅 Thursday
+            </h3>
+
+            <p>
+                🍑 Glutes & Hamstrings
+            </p>
+
+        </div>
+
+
+        <!-- =====================================
+             FRIDAY
+        ====================================== -->
+
+        <div
+            class="dashboard-card"
+            onclick="openWorkoutDay('Friday')">
+
+            <h3>
+                📅 Friday
+            </h3>
+
+            <p>
+                🔥 Core + Cardio
+            </p>
+
+        </div>
+
+
+        <!-- =====================================
+             SATURDAY
+        ====================================== -->
+
+        <div
+            class="dashboard-card"
+            onclick="openWorkoutDay('Saturday')">
+
+            <h3>
+                📅 Saturday
+            </h3>
+
+            <p>
+                🏋️ Full Body
+            </p>
+
+        </div>
+
+
+        <!-- =====================================
+             SUNDAY
+        ====================================== -->
+
+        <div
+            class="dashboard-card"
+            onclick="openWorkoutDay('Sunday')">
+
+            <h3>
+                📅 Sunday
+            </h3>
+
+            <p>
+                🧘 Recovery
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         JAVASCRIPT
+    ====================================== -->
+
+    <script>
+
+        function openWorkoutDay(day) {
+
+            window.location =
+                `workout-day.html?goal=fatLoss&day=${day}`;
+
+        }
+
+    </script>
+
+</body>
+
+</html>
