@@ -570,3 +570,149 @@ hr {
     }
 
 }
+
+.back-button {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    background: #f1f1f1;
+    color: #222;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 15px;
+    transition: 0.2s ease;
+}
+
+.back-button:hover {
+    transform: translateX(-2px);
+    background: #e5e5e5;
+}
+
+/* =====================================
+   NEXT WORKOUT BUTTON
+===================================== */
+
+.next-workout-button {
+
+    width: 100%;
+    padding: 16px;
+
+    border: none;
+    border-radius: 14px;
+
+    background: #3563e9;
+    color: white;
+
+    font-size: 18px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    margin-top: 15px;
+
+}
+
+
+/* =====================================
+   WORKOUT COMPLETE OVERLAY
+===================================== */
+
+.workout-complete-overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    z-index: 9999;
+
+}
+
+
+/* =====================================
+   POPUP
+===================================== */
+
+.workout-complete-popup {
+
+    width: 100%;
+    max-width: 360px;
+
+    background: white;
+
+    border-radius: 20px;
+
+    padding: 28px 22px;
+
+    text-align: center;
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.25);
+
+}
+
+
+.workout-complete-popup .popup-icon {
+
+    font-size: 48px;
+
+    margin-bottom: 10px;
+
+}
+
+
+.workout-complete-popup h2 {
+
+    margin: 5px 0 10px;
+
+}
+
+
+.workout-complete-popup p {
+
+    margin-bottom: 15px;
+
+}
+
+
+.workout-complete-popup h3 {
+
+    margin-bottom: 20px;
+
+}
+
+
+.workout-complete-popup button {
+
+    width: 100%;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background: #3563e9;
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+}
