@@ -1,6 +1,7 @@
 // =====================================
-// CHAMPION HABIT TRACKER v1.5
+// CHAMPION HABIT TRACKER v1.6
 // SCRIPT.JS
+// PROFILE-SAFE VERSION
 // =====================================
 
 
@@ -46,7 +47,118 @@ const habitIds = [
 ];
 
 
-const totalHabits = habitIds.length;
+// =====================================
+// TOTAL HABITS
+// =====================================
+
+const totalHabits =
+    habitIds.length;
+
+
+// =====================================
+// GET CURRENT USER
+// =====================================
+
+function getCurrentUser() {
+
+    return (
+        localStorage.getItem("user") ||
+        ""
+    );
+
+}
+
+
+// =====================================
+// GET TODAY DATE OBJECT
+// =====================================
+
+function getTodayDate() {
+
+    const today =
+        new Date();
+
+    today.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+    return today;
+
+}
+
+
+// =====================================
+// GET DATE KEY
+// =====================================
+
+function getDateKey(date) {
+
+    const year =
+        date.getFullYear();
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
+
+    return `${year}_${month}_${day}`;
+
+}
+
+
+// =====================================
+// GET USER DAILY REPORT KEY
+// =====================================
+//
+// IMPORTANT
+// Every profile gets its own key.
+//
+// Jamal_2026_08_10
+// Gayathri_2026_08_10
+// Vishnu Priya_2026_08_10
+//
+// =====================================
+
+function getUserReportKey(
+    user,
+    date
+) {
+
+    if (!user) {
+        return null;
+    }
+
+    return `${user}_${getDateKey(date)}`;
+
+}
+
+
+// =====================================
+// GET TODAY REPORT KEY
+// =====================================
+
+function getTodayReportKey() {
+
+    const user =
+        getCurrentUser();
+
+    const today =
+        getTodayDate();
+
+    return getUserReportKey(
+        user,
+        today
+    );
+
+}
 
 
 // =====================================
@@ -55,31 +167,56 @@ const totalHabits = habitIds.length;
 
 function welcomeUser() {
 
-    let selectedUser =
+    const selectedUser =
         document.querySelector(
             'input[name="user"]:checked'
         );
 
 
-    if (selectedUser) {
-
-        localStorage.setItem(
-            "user",
-            selectedUser.value
-        );
-
-
-        window.location =
-            "checklist.html";
-
-
-    } else {
+    if (!selectedUser) {
 
         alert(
             "Please select a profile."
         );
 
+        return;
+
     }
+
+
+    const user =
+        selectedUser.value;
+
+
+    // =================================
+    // SAVE CURRENT USER
+    // =================================
+
+    localStorage.setItem(
+        "user",
+        user
+    );
+
+
+    // =================================
+    // OPTIONAL OLD KEY CLEANUP
+    // =================================
+
+    localStorage.removeItem(
+        "currentUser"
+    );
+
+    localStorage.removeItem(
+        "selectedUser"
+    );
+
+
+    // =================================
+    // GO TO CHECKLIST
+    // =================================
+
+    window.location.href =
+        "checklist.html";
 
 }
 
@@ -90,16 +227,18 @@ function welcomeUser() {
 
 function loadUser() {
 
-    let user =
-        localStorage.getItem("user");
+    const user =
+        getCurrentUser();
 
 
     if (!user) {
+
         return;
+
     }
 
 
-    let welcomeText =
+    const welcomeText =
         document.getElementById(
             "welcomeText"
         );
@@ -113,7 +252,7 @@ function loadUser() {
     }
 
 
-    let userName =
+    const userName =
         document.getElementById(
             "userName"
         );
@@ -138,27 +277,27 @@ function loadUser() {
 
 function loadTodayDate() {
 
-    let today =
-        new Date();
+    const today =
+        getTodayDate();
 
 
-    let year =
+    const year =
         today.getFullYear();
 
 
-    let month =
+    const month =
         String(
             today.getMonth() + 1
         ).padStart(2, "0");
 
 
-    let date =
+    const date =
         String(
             today.getDate()
         ).padStart(2, "0");
 
 
-    let todayDate =
+    const todayDate =
         document.getElementById(
             "todayDate"
         );
@@ -175,68 +314,74 @@ function loadTodayDate() {
 
 
 // =====================================
-// GET TODAY REPORT KEY
-// =====================================
-
-function getTodayReportKey() {
-
-    let user =
-        localStorage.getItem("user");
-
-
-    let today =
-        new Date();
-
-
-    let year =
-        today.getFullYear();
-
-
-    let month =
-        String(
-            today.getMonth() + 1
-        ).padStart(2, "0");
-
-
-    let date =
-        String(
-            today.getDate()
-        ).padStart(2, "0");
-
-
-    return `${user}_${year}_${month}_${date}`;
-
-}
-
-
-// =====================================
 // SAVE REPORT
 // =====================================
 
 function saveReport() {
 
-    let report = {};
+    const user =
+        getCurrentUser();
 
 
-    habitIds.forEach(function(id) {
+    if (!user) {
 
-        let checkbox =
-            document.getElementById(id);
+        alert(
+            "No profile selected."
+        );
+
+        return;
+
+    }
 
 
-        if (checkbox) {
+    const report = {};
 
-            report[id] =
-                checkbox.checked;
+
+    // =================================
+    // READ ALL 21 HABITS
+    // =================================
+
+    habitIds.forEach(
+        function(id) {
+
+            const checkbox =
+                document.getElementById(id);
+
+
+            if (checkbox) {
+
+                report[id] =
+                    checkbox.checked;
+
+            } else {
+
+                report[id] =
+                    false;
+
+            }
 
         }
+    );
 
-    });
 
+    // =================================
+    // USER-SPECIFIC TODAY KEY
+    // =================================
 
-    let reportKey =
+    const reportKey =
         getTodayReportKey();
 
+
+    if (!reportKey) {
+
+        return;
+
+    }
+
+
+    // =================================
+    // SAVE
+    // =================================
 
     localStorage.setItem(
         reportKey,
@@ -244,11 +389,15 @@ function saveReport() {
     );
 
 
+    // =================================
+    // UPDATE UI
+    // =================================
+
     updateProgress();
 
 
     alert(
-        "Report Saved Successfully ✅"
+        `${user}'s report saved successfully ✅`
     );
 
 }
@@ -260,50 +409,86 @@ function saveReport() {
 
 function loadReport() {
 
-    let reportKey =
+    const reportKey =
         getTodayReportKey();
 
 
-    let savedReport =
+    if (!reportKey) {
+
+        return;
+
+    }
+
+
+    const savedReport =
         localStorage.getItem(
             reportKey
         );
 
 
+    // =================================
+    // CLEAR CHECKBOXES FIRST
+    // =================================
+
+    habitIds.forEach(
+        function(id) {
+
+            const checkbox =
+                document.getElementById(id);
+
+
+            if (checkbox) {
+
+                checkbox.checked =
+                    false;
+
+            }
+
+        }
+    );
+
+
+    // =================================
+    // LOAD SAVED REPORT
+    // =================================
+
     if (savedReport) {
 
         try {
 
-            let report =
+            const report =
                 JSON.parse(
                     savedReport
                 );
 
 
-            habitIds.forEach(function(id) {
+            habitIds.forEach(
+                function(id) {
 
-                let checkbox =
-                    document.getElementById(id);
+                    const checkbox =
+                        document.getElementById(id);
 
 
-                if (
-                    checkbox &&
-                    report[id] !== undefined
-                ) {
+                    if (
+                        checkbox &&
+                        report[id] !== undefined
+                    ) {
 
-                    checkbox.checked =
-                        report[id];
+                        checkbox.checked =
+                            report[id] === true;
+
+                    }
 
                 }
-
-            });
+            );
 
 
         } catch (error) {
 
             console.log(
                 "Invalid report:",
-                reportKey
+                reportKey,
+                error
             );
 
         }
@@ -320,32 +505,54 @@ function loadReport() {
 // CALCULATE PROGRESS
 // =====================================
 
-function calculateProgress(report) {
+function calculateProgress(
+    report
+) {
 
-    let completed = 0;
+    let completed =
+        0;
 
 
-    habitIds.forEach(function(id) {
+    habitIds.forEach(
+        function(id) {
 
-        if (report[id] === true) {
+            if (
+                report &&
+                report[id] === true
+            ) {
 
-            completed++;
+                completed++;
+
+            }
 
         }
-
-    });
+    );
 
 
     let percentage =
-        Math.round(
-            (completed / totalHabits) * 100
-        );
+        0;
+
+
+    if (totalHabits > 0) {
+
+        percentage =
+            Math.round(
+                (
+                    completed /
+                    totalHabits
+                ) * 100
+            );
+
+    }
 
 
     return {
 
-        completed,
-        percentage
+        completed:
+            completed,
+
+        percentage:
+            percentage
 
     };
 
@@ -353,47 +560,56 @@ function calculateProgress(report) {
 
 
 // =====================================
-// UPDATE LIVE PROGRESS
+// UPDATE LIVE CHECKLIST PROGRESS
 // =====================================
 
 function updateProgress() {
 
-    let report = {};
+    const report = {};
 
 
-    habitIds.forEach(function(id) {
+    habitIds.forEach(
+        function(id) {
 
-        let checkbox =
-            document.getElementById(id);
+            const checkbox =
+                document.getElementById(id);
 
 
-        if (checkbox) {
+            if (checkbox) {
 
-            report[id] =
-                checkbox.checked;
+                report[id] =
+                    checkbox.checked;
+
+            } else {
+
+                report[id] =
+                    false;
+
+            }
 
         }
-
-    });
-
-
-    let result =
-        calculateProgress(report);
+    );
 
 
-    let completedText =
+    const result =
+        calculateProgress(
+            report
+        );
+
+
+    const completedText =
         document.getElementById(
             "completedText"
         );
 
 
-    let percentageText =
+    const percentageText =
         document.getElementById(
             "percentageText"
         );
 
 
-    let progressBar =
+    const progressBar =
         document.getElementById(
             "progressBar"
         );
@@ -426,21 +642,90 @@ function updateProgress() {
 
 
 // =====================================
+// GET USER DAILY REPORT
+// =====================================
+
+function getUserDailyReport(
+    user,
+    date
+) {
+
+    const key =
+        getUserReportKey(
+            user,
+            date
+        );
+
+
+    if (!key) {
+
+        return null;
+
+    }
+
+
+    const savedReport =
+        localStorage.getItem(key);
+
+
+    if (!savedReport) {
+
+        return null;
+
+    }
+
+
+    try {
+
+        const report =
+            JSON.parse(
+                savedReport
+            );
+
+
+        if (
+            report &&
+            typeof report === "object"
+        ) {
+
+            return report;
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Invalid report:",
+            key,
+            error
+        );
+
+    }
+
+
+    return null;
+
+}
+
+
+// =====================================
 // LOAD HISTORY
 // =====================================
 
 function loadHistory() {
 
-    let user =
-        localStorage.getItem("user");
+    const user =
+        getCurrentUser();
 
 
     if (!user) {
+
         return;
+
     }
 
 
-    let welcomeText =
+    const welcomeText =
         document.getElementById(
             "welcomeText"
         );
@@ -454,25 +739,28 @@ function loadHistory() {
     }
 
 
-    let historyList =
+    const historyList =
         document.getElementById(
             "historyList"
         );
 
 
     if (!historyList) {
+
         return;
+
     }
 
 
-    historyList.innerHTML = "";
+    historyList.innerHTML =
+        "";
 
 
-    let reports = [];
+    const reports = [];
 
 
     // =================================
-    // COLLECT USER REPORTS
+    // COLLECT ONLY CURRENT USER REPORTS
     // =================================
 
     for (
@@ -481,12 +769,18 @@ function loadHistory() {
         i++
     ) {
 
-        let key =
+        const key =
             localStorage.key(i);
 
 
+        if (!key) {
+
+            continue;
+
+        }
+
+
         if (
-            !key ||
             !key.startsWith(
                 user + "_"
             )
@@ -497,9 +791,12 @@ function loadHistory() {
         }
 
 
+        const parts =
+            key.split("_");
+
+
         if (
-            key ===
-            `${user}_report`
+            parts.length !== 4
         ) {
 
             continue;
@@ -507,24 +804,38 @@ function loadHistory() {
         }
 
 
-        let parts =
-            key.split("_");
+        const year =
+            Number(parts[1]);
 
 
-        if (parts.length !== 4) {
+        const month =
+            Number(parts[2]);
+
+
+        const date =
+            Number(parts[3]);
+
+
+        if (
+            !year ||
+            !month ||
+            !date
+        ) {
 
             continue;
 
         }
 
 
-        let savedReport =
-            localStorage.getItem(key);
+        const savedReport =
+            localStorage.getItem(
+                key
+            );
 
 
         try {
 
-            let report =
+            const report =
                 JSON.parse(
                     savedReport
                 );
@@ -551,127 +862,131 @@ function loadHistory() {
 
 
     // =================================
-    // LATEST DATE FIRST
+    // SORT NEWEST FIRST
     // =================================
 
-    reports.sort(function(a, b) {
+    reports.sort(
+        function(a, b) {
 
-        return b.key.localeCompare(
-            a.key
-        );
+            return b.key.localeCompare(
+                a.key
+            );
 
-    });
+        }
+    );
 
 
     // =================================
     // DISPLAY HISTORY
     // =================================
 
-    reports.forEach(function(item) {
+    reports.forEach(
+        function(item) {
 
-        let key =
-            item.key;
-
-
-        let report =
-            item.report;
+            const key =
+                item.key;
 
 
-        let result =
-            calculateProgress(
-                report
-            );
+            const report =
+                item.report;
 
 
-        let parts =
-            key.split("_");
+            const result =
+                calculateProgress(
+                    report
+                );
 
 
-        let year =
-            parts[1];
+            const parts =
+                key.split("_");
 
 
-        let month =
-            parts[2];
+            const year =
+                parts[1];
 
 
-        let date =
-            parts[3];
+            const month =
+                parts[2];
 
 
-        let months = [
-
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec"
-
-        ];
+            const date =
+                parts[3];
 
 
-        let monthName =
-            months[
-                Number(month) - 1
+            const months = [
+
+                "Jan",
+                "Feb",
+                "Mar",
+                "Apr",
+                "May",
+                "Jun",
+                "Jul",
+                "Aug",
+                "Sep",
+                "Oct",
+                "Nov",
+                "Dec"
+
             ];
 
 
-        let displayDate =
-            `${date} ${monthName} ${year}`;
+            const monthName =
+                months[
+                    Number(month) - 1
+                ];
 
 
-        let card =
-            document.createElement(
-                "div"
+            const displayDate =
+                `${date} ${monthName} ${year}`;
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "history-card";
+
+
+            card.innerHTML = `
+
+                <h3>
+                    📅 ${displayDate}
+                </h3>
+
+                <p>
+                    Completed :
+                    ${result.completed}
+                    /
+                    ${totalHabits}
+                </p>
+
+                <p>
+                    Progress :
+                    ${result.percentage}%
+                </p>
+
+                <progress
+                    value="${result.percentage}"
+                    max="100">
+                </progress>
+
+            `;
+
+
+            historyList.appendChild(
+                card
             );
 
-
-        card.className =
-            "history-card";
-
-
-        card.innerHTML = `
-
-            <h3>
-                📅 ${displayDate}
-            </h3>
-
-            <p>
-                Completed :
-                ${result.completed}
-                /
-                ${totalHabits}
-            </p>
-
-            <p>
-                Progress :
-                ${result.percentage}%
-            </p>
-
-            <progress
-                value="${result.percentage}"
-                max="100">
-            </progress>
-
-        `;
-
-
-        historyList.appendChild(
-            card
-        );
-
-    });
+        }
+    );
 
 
     // =================================
-    // NO REPORTS
+    // NO REPORT
     // =================================
 
     if (
@@ -706,22 +1021,24 @@ function loadHistory() {
 
 function loadWeeklyReport() {
 
-    let user =
-        localStorage.getItem("user");
+    const user =
+        getCurrentUser();
 
 
     if (!user) {
+
         return;
+
     }
 
 
-    let weeklyDays =
+    const weeklyDays =
         document.getElementById(
             "weeklyDays"
         );
 
 
-    let weeklyAverage =
+    const weeklyAverage =
         document.getElementById(
             "weeklyAverage"
         );
@@ -737,45 +1054,31 @@ function loadWeeklyReport() {
     }
 
 
-    weeklyDays.innerHTML = "";
+    weeklyDays.innerHTML =
+        "";
 
 
-    // =================================
-    // TODAY
-    // =================================
-
-    let today =
-        new Date();
+    const today =
+        getTodayDate();
 
 
-    today.setHours(
-        0,
-        0,
-        0,
-        0
-    );
-
-
-    // =================================
-    // CURRENT WEEK MONDAY
-    // =================================
-
-    let todayDay =
+    const todayDay =
         today.getDay();
 
 
-    let currentMonday =
+    const currentMonday =
         new Date(today);
 
 
-    let difference =
+    const difference =
         todayDay === 0
             ? -6
             : 1 - todayDay;
 
 
     currentMonday.setDate(
-        today.getDate() + difference
+        today.getDate() +
+        difference
     );
 
 
@@ -787,45 +1090,35 @@ function loadWeeklyReport() {
     );
 
 
-    // =================================
-    // WEEK OFFSET
-    // =================================
-
-    let weekOffset = 0;
+    let weekOffset =
+        0;
 
 
-    // =================================
-    // WEEK BUTTONS
-    // =================================
-
-    let previousButton =
+    const previousButton =
         document.getElementById(
             "previousWeek"
         );
 
 
-    let nextButton =
+    const nextButton =
         document.getElementById(
             "nextWeek"
         );
 
 
-    let weekTitle =
+    const weekTitle =
         document.getElementById(
             "weekTitle"
         );
 
 
-    // =================================
-    // DISPLAY WEEK
-    // =================================
-
     function displayWeek() {
 
-        weeklyDays.innerHTML = "";
+        weeklyDays.innerHTML =
+            "";
 
 
-        let monday =
+        const monday =
             new Date(
                 currentMonday
             );
@@ -833,58 +1126,58 @@ function loadWeeklyReport() {
 
         monday.setDate(
             currentMonday.getDate() +
-            (weekOffset * 7)
+            (
+                weekOffset *
+                7
+            )
         );
 
 
-        let sunday =
+        const sunday =
             new Date(
                 monday
             );
 
 
         sunday.setDate(
-            monday.getDate() + 6
+            monday.getDate() +
+            6
         );
 
 
-        // =================================
-        // WEEK TITLE
-        // =================================
-
-        let mondayDate =
-            String(
-                monday.getDate()
-            ).padStart(2, "0");
-
-
-        let mondayMonth =
-            String(
-                monday.getMonth() + 1
-            ).padStart(2, "0");
-
-
-        let mondayYear =
-            monday.getFullYear();
-
-
-        let sundayDate =
-            String(
-                sunday.getDate()
-            ).padStart(2, "0");
-
-
-        let sundayMonth =
-            String(
-                sunday.getMonth() + 1
-            ).padStart(2, "0");
-
-
-        let sundayYear =
-            sunday.getFullYear();
-
-
         if (weekTitle) {
+
+            const mondayDate =
+                String(
+                    monday.getDate()
+                ).padStart(2, "0");
+
+
+            const mondayMonth =
+                String(
+                    monday.getMonth() + 1
+                ).padStart(2, "0");
+
+
+            const mondayYear =
+                monday.getFullYear();
+
+
+            const sundayDate =
+                String(
+                    sunday.getDate()
+                ).padStart(2, "0");
+
+
+            const sundayMonth =
+                String(
+                    sunday.getMonth() + 1
+                ).padStart(2, "0");
+
+
+            const sundayYear =
+                sunday.getFullYear();
+
 
             weekTitle.innerHTML =
                 `📅 ${mondayDate}/${mondayMonth}/${mondayYear}
@@ -892,10 +1185,6 @@ function loadWeeklyReport() {
 
         }
 
-
-        // =================================
-        // NEXT BUTTON
-        // =================================
 
         if (nextButton) {
 
@@ -905,10 +1194,6 @@ function loadWeeklyReport() {
         }
 
 
-        // =================================
-        // PREVIOUS BUTTON
-        // =================================
-
         if (previousButton) {
 
             previousButton.disabled =
@@ -917,7 +1202,7 @@ function loadWeeklyReport() {
         }
 
 
-        let dayNames = [
+        const dayNames = [
 
             "Mon",
             "Tue",
@@ -930,14 +1215,13 @@ function loadWeeklyReport() {
         ];
 
 
-        let totalProgress = 0;
+        let totalProgress =
+            0;
 
-        let trackedDays = 0;
 
+        let trackedDays =
+            0;
 
-        // =================================
-        // 7 DAYS
-        // =================================
 
         for (
             let i = 0;
@@ -945,113 +1229,84 @@ function loadWeeklyReport() {
             i++
         ) {
 
-            let currentDate =
+            const currentDate =
                 new Date(
                     monday
                 );
 
 
             currentDate.setDate(
-                monday.getDate() + i
+                monday.getDate() +
+                i
             );
 
 
-            let year =
-                currentDate.getFullYear();
+            currentDate.setHours(
+                0,
+                0,
+                0,
+                0
+            );
 
 
-            let month =
-                String(
-                    currentDate.getMonth() + 1
-                ).padStart(2, "0");
+            const isFuture =
+                currentDate >
+                today;
 
 
-            let date =
-                String(
-                    currentDate.getDate()
-                ).padStart(2, "0");
+            let percentage =
+                0;
 
 
-            let isFuture =
-                currentDate > today;
+            let completed =
+                0;
 
 
-            let percentage = 0;
+            let hasReport =
+                false;
 
-            let completed = 0;
-
-            let hasReport = false;
-
-
-            // =================================
-            // LOAD REPORT
-            // =================================
 
             if (!isFuture) {
 
-                let reportKey =
-                    `${user}_${year}_${month}_${date}`;
-
-
-                let savedReport =
-                    localStorage.getItem(
-                        reportKey
+                const report =
+                    getUserDailyReport(
+                        user,
+                        currentDate
                     );
 
 
-                if (savedReport) {
+                if (report) {
 
-                    try {
-
-                        let report =
-                            JSON.parse(
-                                savedReport
-                            );
-
-
-                        let result =
-                            calculateProgress(
-                                report
-                            );
-
-
-                        percentage =
-                            result.percentage;
-
-
-                        completed =
-                            result.completed;
-
-
-                        hasReport = true;
-
-
-                        totalProgress +=
-                            percentage;
-
-
-                        trackedDays++;
-
-
-                    } catch (error) {
-
-                        console.log(
-                            "Invalid report:",
-                            reportKey
+                    const result =
+                        calculateProgress(
+                            report
                         );
 
-                    }
+
+                    percentage =
+                        result.percentage;
+
+
+                    completed =
+                        result.completed;
+
+
+                    hasReport =
+                        true;
+
+
+                    totalProgress +=
+                        percentage;
+
+
+                    trackedDays++;
 
                 }
 
             }
 
 
-            // =================================
-            // DAY CARD
-            // =================================
-
-            let dayCard =
+            const dayCard =
                 document.createElement(
                     "div"
                 );
@@ -1059,6 +1314,22 @@ function loadWeeklyReport() {
 
             dayCard.className =
                 "history-card";
+
+
+            const year =
+                currentDate.getFullYear();
+
+
+            const month =
+                String(
+                    currentDate.getMonth() + 1
+                ).padStart(2, "0");
+
+
+            const date =
+                String(
+                    currentDate.getDate()
+                ).padStart(2, "0");
 
 
             if (isFuture) {
@@ -1079,10 +1350,7 @@ function loadWeeklyReport() {
 
                 `;
 
-            }
-
-
-            else if (hasReport) {
+            } else if (hasReport) {
 
                 dayCard.innerHTML = `
 
@@ -1115,10 +1383,7 @@ function loadWeeklyReport() {
 
                 `;
 
-            }
-
-
-            else {
+            } else {
 
                 dayCard.innerHTML = `
 
@@ -1158,14 +1423,13 @@ function loadWeeklyReport() {
         }
 
 
-        // =================================
-        // WEEKLY AVERAGE
-        // =================================
-
-        let average = 0;
+        let average =
+            0;
 
 
-        if (trackedDays > 0) {
+        if (
+            trackedDays > 0
+        ) {
 
             average =
                 Math.round(
@@ -1182,10 +1446,6 @@ function loadWeeklyReport() {
     }
 
 
-    // =================================
-    // PREVIOUS WEEK
-    // =================================
-
     if (previousButton) {
 
         previousButton.onclick =
@@ -1200,16 +1460,14 @@ function loadWeeklyReport() {
     }
 
 
-    // =================================
-    // NEXT WEEK
-    // =================================
-
     if (nextButton) {
 
         nextButton.onclick =
             function() {
 
-                if (weekOffset < 0) {
+                if (
+                    weekOffset < 0
+                ) {
 
                     weekOffset++;
 
@@ -1222,10 +1480,6 @@ function loadWeeklyReport() {
     }
 
 
-    // =================================
-    // FIRST LOAD
-    // =================================
-
     displayWeek();
 
 }
@@ -1233,39 +1487,40 @@ function loadWeeklyReport() {
 
 // =====================================
 // MONTHLY REPORT
-// CALENDAR VERSION
 // =====================================
 
 function loadMonthlyReport() {
 
-    let user =
-        localStorage.getItem("user");
+    const user =
+        getCurrentUser();
 
 
     if (!user) {
+
         return;
+
     }
 
 
-    let monthSelector =
+    const monthSelector =
         document.getElementById(
             "monthSelector"
         );
 
 
-    let monthlyCalendar =
+    const monthlyCalendar =
         document.getElementById(
             "monthlyCalendar"
         );
 
 
-    let monthlyAverage =
+    const monthlyAverage =
         document.getElementById(
             "monthlyAverage"
         );
 
 
-    let selectedDateReport =
+    const selectedDateReport =
         document.getElementById(
             "selectedDateReport"
         );
@@ -1283,11 +1538,7 @@ function loadMonthlyReport() {
     }
 
 
-    // =================================
-    // MONTH NAMES
-    // =================================
-
-    let monthNames = [
+    const monthNames = [
 
         "January",
         "February",
@@ -1305,39 +1556,24 @@ function loadMonthlyReport() {
     ];
 
 
-    // =================================
-    // TODAY
-    // =================================
-
-    let today =
-        new Date();
+    const today =
+        getTodayDate();
 
 
-    today.setHours(
-        0,
-        0,
-        0,
-        0
-    );
-
-
-    let currentYear =
+    const currentYear =
         today.getFullYear();
 
 
-    let currentMonth =
+    const currentMonth =
         today.getMonth() + 1;
 
 
-    let currentDay =
+    const currentDay =
         today.getDate();
 
 
-    // =================================
-    // CREATE MONTH SELECTOR
-    // =================================
-
-    monthSelector.innerHTML = "";
+    monthSelector.innerHTML =
+        "";
 
 
     for (
@@ -1346,13 +1582,13 @@ function loadMonthlyReport() {
         month++
     ) {
 
-        let option =
+        const option =
             document.createElement(
                 "option"
             );
 
 
-        let monthNumber =
+        const monthNumber =
             String(month)
                 .padStart(2, "0");
 
@@ -1372,17 +1608,9 @@ function loadMonthlyReport() {
     }
 
 
-    // =================================
-    // CURRENT MONTH
-    // =================================
-
     monthSelector.value =
         `${currentYear}-${String(currentMonth).padStart(2, "0")}`;
 
-
-    // =================================
-    // DISPLAY SELECTED DATE REPORT
-    // =================================
 
     function showDateReport(
         year,
@@ -1390,27 +1618,22 @@ function loadMonthlyReport() {
         day
     ) {
 
-        let monthNumber =
-            String(month)
-                .padStart(2, "0");
-
-
-        let dateNumber =
-            String(day)
-                .padStart(2, "0");
-
-
-        let reportKey =
-            `${user}_${year}_${monthNumber}_${dateNumber}`;
-
-
-        let savedReport =
-            localStorage.getItem(
-                reportKey
+        const selectedDate =
+            new Date(
+                year,
+                month - 1,
+                day
             );
 
 
-        if (!savedReport) {
+        const report =
+            getUserDailyReport(
+                user,
+                selectedDate
+            );
+
+
+        if (!report) {
 
             selectedDateReport.innerHTML = `
 
@@ -1429,7 +1652,9 @@ function loadMonthlyReport() {
 
                     <p>
                         Progress :
-                        <strong>0%</strong>
+                        <strong>
+                            0%
+                        </strong>
                     </p>
 
                 </div>
@@ -1441,109 +1666,79 @@ function loadMonthlyReport() {
         }
 
 
-        try {
-
-            let report =
-                JSON.parse(
-                    savedReport
-                );
+        const result =
+            calculateProgress(
+                report
+            );
 
 
-            let result =
-                calculateProgress(
-                    report
-                );
+        selectedDateReport.innerHTML = `
 
+            <div class="selected-date-card">
 
-            selectedDateReport.innerHTML = `
+                <h3>
+                    📅
+                    ${String(day).padStart(2, "0")}
+                    ${monthNames[month - 1]}
+                    ${year}
+                </h3>
 
-                <div class="selected-date-card">
+                <p>
+                    Completed :
+                    <strong>
+                        ${result.completed} / ${totalHabits}
+                    </strong>
+                </p>
 
-                    <h3>
-                        📅
-                        ${String(day).padStart(2, "0")}
-                        ${monthNames[month - 1]}
-                        ${year}
-                    </h3>
+                <p>
+                    Progress :
+                    <strong>
+                        ${result.percentage}%
+                    </strong>
+                </p>
 
-                    <p>
-                        Completed :
-                        <strong>
-                            ${result.completed} / ${totalHabits}
-                        </strong>
-                    </p>
+                <progress
+                    value="${result.percentage}"
+                    max="100">
+                </progress>
 
-                    <p>
-                        Progress :
-                        <strong>
-                            ${result.percentage}%
-                        </strong>
-                    </p>
+            </div>
 
-                    <progress
-                        value="${result.percentage}"
-                        max="100">
-                    </progress>
-
-                </div>
-
-            `;
-
-
-        } catch (error) {
-
-            selectedDateReport.innerHTML = `
-
-                <div class="selected-date-card">
-
-                    <p>
-                        ⚠️ Invalid report data.
-                    </p>
-
-                </div>
-
-            `;
-
-        }
+        `;
 
     }
 
 
-    // =================================
-    // DISPLAY CALENDAR
-    // =================================
-
     function displayCalendar() {
 
-        let selectedMonth =
+        const selectedMonth =
             monthSelector.value;
 
 
         if (!selectedMonth) {
+
             return;
+
         }
 
 
-        let parts =
+        const parts =
             selectedMonth.split("-");
 
 
-        let year =
+        const year =
             Number(parts[0]);
 
 
-        let month =
+        const month =
             Number(parts[1]);
 
 
-        monthlyCalendar.innerHTML = "";
+        monthlyCalendar.innerHTML =
+            "";
 
 
-        // =================================
-        // FIRST DAY OF MONTH
-        // =================================
-
-        let firstDate =
+        const firstDate =
             new Date(
                 year,
                 month - 1,
@@ -1551,15 +1746,11 @@ function loadMonthlyReport() {
             );
 
 
-        let firstDay =
+        const firstDay =
             firstDate.getDay();
 
 
-        // =================================
-        // DAYS IN MONTH
-        // =================================
-
-        let daysInMonth =
+        const daysInMonth =
             new Date(
                 year,
                 month,
@@ -1567,17 +1758,16 @@ function loadMonthlyReport() {
             ).getDate();
 
 
+        let totalProgress =
+            0;
+
+
+        let reportCount =
+            0;
+
+
         // =================================
-        // AVERAGE
-        // =================================
-
-        let totalProgress = 0;
-
-        let reportCount = 0;
-
-
-        // =================================
-        // EMPTY CELLS BEFORE DAY 1
+        // EMPTY CELLS
         // =================================
 
         for (
@@ -1586,7 +1776,7 @@ function loadMonthlyReport() {
             i++
         ) {
 
-            let emptyDay =
+            const emptyDay =
                 document.createElement(
                     "div"
                 );
@@ -1604,7 +1794,7 @@ function loadMonthlyReport() {
 
 
         // =================================
-        // CREATE DAYS
+        // DAYS
         // =================================
 
         for (
@@ -1613,82 +1803,55 @@ function loadMonthlyReport() {
             day++
         ) {
 
-            let monthNumber =
-                String(month)
-                    .padStart(2, "0");
-
-
-            let dateNumber =
-                String(day)
-                    .padStart(2, "0");
-
-
-            let reportKey =
-                `${user}_${year}_${monthNumber}_${dateNumber}`;
-
-
-            let savedReport =
-                localStorage.getItem(
-                    reportKey
+            const currentDate =
+                new Date(
+                    year,
+                    month - 1,
+                    day
                 );
 
 
-            let percentage = 0;
-
-            let hasReport = false;
-
-
-            // =================================
-            // LOAD REPORT
-            // =================================
-
-            if (savedReport) {
-
-                try {
-
-                    let report =
-                        JSON.parse(
-                            savedReport
-                        );
+            const report =
+                getUserDailyReport(
+                    user,
+                    currentDate
+                );
 
 
-                    let result =
-                        calculateProgress(
-                            report
-                        );
+            let percentage =
+                0;
 
 
-                    percentage =
-                        result.percentage;
+            let hasReport =
+                false;
 
 
-                    hasReport = true;
+            if (report) {
 
-
-                    totalProgress +=
-                        percentage;
-
-
-                    reportCount++;
-
-
-                } catch (error) {
-
-                    console.log(
-                        "Invalid report:",
-                        reportKey
+                const result =
+                    calculateProgress(
+                        report
                     );
 
-                }
+
+                percentage =
+                    result.percentage;
+
+
+                hasReport =
+                    true;
+
+
+                totalProgress +=
+                    percentage;
+
+
+                reportCount++;
 
             }
 
 
-            // =================================
-            // CREATE CALENDAR DAY
-            // =================================
-
-            let dayCell =
+            const dayCell =
                 document.createElement(
                     "div"
                 );
@@ -1734,10 +1897,6 @@ function loadMonthlyReport() {
             }
 
 
-            // =================================
-            // DAY CONTENT
-            // =================================
-
             if (hasReport) {
 
                 dayCell.innerHTML = `
@@ -1777,10 +1936,6 @@ function loadMonthlyReport() {
             }
 
 
-            // =================================
-            // DATE CLICK
-            // =================================
-
             dayCell.addEventListener(
                 "click",
                 function() {
@@ -1806,10 +1961,13 @@ function loadMonthlyReport() {
         // MONTHLY AVERAGE
         // =================================
 
-        let average = 0;
+        let average =
+            0;
 
 
-        if (reportCount > 0) {
+        if (
+            reportCount > 0
+        ) {
 
             average =
                 Math.round(
@@ -1825,7 +1983,7 @@ function loadMonthlyReport() {
 
 
         // =================================
-        // DEFAULT SELECTED DATE
+        // DEFAULT DATE
         // =================================
 
         if (
@@ -1860,10 +2018,6 @@ function loadMonthlyReport() {
     }
 
 
-    // =================================
-    // MONTH CHANGE
-    // =================================
-
     monthSelector.onchange =
         function() {
 
@@ -1872,101 +2026,37 @@ function loadMonthlyReport() {
         };
 
 
-    // =================================
-    // FIRST LOAD
-    // =================================
-
     displayCalendar();
 
 }
 
 
 // =====================================
-// AUTO LOAD BASED ON PAGE
-// =====================================
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-
-        // =================================
-        // CHECKLIST PAGE
-        // =================================
-
-        if (
-            document.getElementById(
-                "welcomeText"
-            ) &&
-            document.getElementById(
-                "completedText"
-            )
-        ) {
-
-            loadUser();
-
-            loadReport();
-
-        }
-
-
-        // =================================
-        // HISTORY PAGE
-        // =================================
-
-        if (
-            document.getElementById(
-                "historyList"
-            )
-        ) {
-
-            loadHistory();
-
-            loadWeeklyReport();
-
-            loadMonthlyReport();
-
-        }
-
-    }
-);
-
-    // =================================
-    // DASHBOARD PAGE
-    // =================================
-
-    if (
-        document.getElementById(
-            "todayCompleted"
-        )
-    ) {
-
-        loadDashboard();
-
-    }
-
-// =====================================
-// DASHBOARD REPORT
+// DASHBOARD
 // =====================================
 
 function loadDashboard() {
 
-    let user =
-        localStorage.getItem("user");
+    const user =
+        getCurrentUser();
+
 
     if (!user) {
+
         return;
+
     }
 
 
     // =================================
-    // WELCOME USER
+    // WELCOME
     // =================================
 
-    let welcomeText =
+    const welcomeText =
         document.getElementById(
             "welcomeText"
         );
+
 
     if (welcomeText) {
 
@@ -1980,74 +2070,39 @@ function loadDashboard() {
     // TODAY
     // =================================
 
-    let today =
-        new Date();
-
-    today.setHours(
-        0,
-        0,
-        0,
-        0
-    );
+    const today =
+        getTodayDate();
 
 
-    let todayYear =
-        today.getFullYear();
-
-    let todayMonth =
-        String(
-            today.getMonth() + 1
-        ).padStart(2, "0");
-
-    let todayDate =
-        String(
-            today.getDate()
-        ).padStart(2, "0");
-
-
-    let todayKey =
-        `${user}_${todayYear}_${todayMonth}_${todayDate}`;
-
-
-    let todayReport =
-        localStorage.getItem(
-            todayKey
+    const todayReport =
+        getUserDailyReport(
+            user,
+            today
         );
 
 
-    let todayCompleted = 0;
+    let todayCompleted =
+        0;
 
-    let todayPercentage = 0;
+
+    let todayPercentage =
+        0;
 
 
     if (todayReport) {
 
-        try {
-
-            let report =
-                JSON.parse(
-                    todayReport
-                );
-
-            let result =
-                calculateProgress(
-                    report
-                );
-
-            todayCompleted =
-                result.completed;
-
-            todayPercentage =
-                result.percentage;
-
-        } catch (error) {
-
-            console.log(
-                "Invalid dashboard today report:",
-                todayKey
+        const result =
+            calculateProgress(
+                todayReport
             );
 
-        }
+
+        todayCompleted =
+            result.completed;
+
+
+        todayPercentage =
+            result.percentage;
 
     }
 
@@ -2056,17 +2111,19 @@ function loadDashboard() {
     // TODAY UI
     // =================================
 
-    let todayCompletedText =
+    const todayCompletedText =
         document.getElementById(
             "todayCompleted"
         );
 
-    let todayPercentageText =
+
+    const todayPercentageText =
         document.getElementById(
             "todayPercentage"
         );
 
-    let todayProgressBar =
+
+    const todayProgressBar =
         document.getElementById(
             "todayProgressBar"
         );
@@ -2097,39 +2154,40 @@ function loadDashboard() {
 
 
     // =================================
-    // CURRENT WEEK
+    // MONTHLY / WEEKLY / OVERALL
     // =================================
 
-    let todayDay =
+    let weeklyTotal =
+        0;
+
+
+    let weeklyTracked =
+        0;
+
+
+    const todayDay =
         today.getDay();
 
-    let currentMonday =
+
+    const currentMonday =
         new Date(today);
 
-    let difference =
+
+    const difference =
         todayDay === 0
             ? -6
             : 1 - todayDay;
 
 
     currentMonday.setDate(
-        today.getDate() + difference
-    );
-
-    currentMonday.setHours(
-        0,
-        0,
-        0,
-        0
+        today.getDate() +
+        difference
     );
 
 
-    let weeklyTotal =
-        0;
-
-    let weeklyTracked =
-        0;
-
+    // =================================
+    // WEEK
+    // =================================
 
     for (
         let i = 0;
@@ -2137,14 +2195,17 @@ function loadDashboard() {
         i++
     ) {
 
-        let currentDate =
+        const currentDate =
             new Date(
                 currentMonday
             );
 
+
         currentDate.setDate(
-            currentMonday.getDate() + i
+            currentMonday.getDate() +
+            i
         );
+
 
         currentDate.setHours(
             0,
@@ -2153,8 +2214,6 @@ function loadDashboard() {
             0
         );
 
-
-        // Don't count future days
 
         if (
             currentDate > today
@@ -2165,64 +2224,34 @@ function loadDashboard() {
         }
 
 
-        let year =
-            currentDate.getFullYear();
-
-        let month =
-            String(
-                currentDate.getMonth() + 1
-            ).padStart(2, "0");
-
-        let date =
-            String(
-                currentDate.getDate()
-            ).padStart(2, "0");
-
-
-        let reportKey =
-            `${user}_${year}_${month}_${date}`;
-
-
-        let savedReport =
-            localStorage.getItem(
-                reportKey
+        const report =
+            getUserDailyReport(
+                user,
+                currentDate
             );
 
 
-        if (savedReport) {
+        if (report) {
 
-            try {
-
-                let report =
-                    JSON.parse(
-                        savedReport
-                    );
-
-                let result =
-                    calculateProgress(
-                        report
-                    );
-
-                weeklyTotal +=
-                    result.percentage;
-
-                weeklyTracked++;
-
-            } catch (error) {
-
-                console.log(
-                    "Invalid weekly dashboard report:",
-                    reportKey
+            const result =
+                calculateProgress(
+                    report
                 );
 
-            }
+
+            weeklyTotal +=
+                result.percentage;
+
+
+            weeklyTracked++;
 
         }
 
     }
 
 
-    let weeklyAverage = 0;
+    let weeklyAverage =
+        0;
 
 
     if (
@@ -2238,16 +2267,13 @@ function loadDashboard() {
     }
 
 
-    // =================================
-    // WEEKLY UI
-    // =================================
-
-    let dashboardWeeklyAverage =
+    const dashboardWeeklyAverage =
         document.getElementById(
             "dashboardWeeklyAverage"
         );
 
-    let dashboardWeeklyBar =
+
+    const dashboardWeeklyBar =
         document.getElementById(
             "dashboardWeeklyBar"
         );
@@ -2274,22 +2300,23 @@ function loadDashboard() {
 
 
     // =================================
-    // CURRENT MONTH
+    // MONTH
     // =================================
 
     let monthlyTotal =
         0;
 
+
     let monthlyTracked =
         0;
 
 
-    let daysInMonth =
-        new Date(
-            todayYear,
-            today.getMonth() + 1,
-            0
-        ).getDate();
+    const currentYear =
+        today.getFullYear();
+
+
+    const currentMonth =
+        today.getMonth();
 
 
     for (
@@ -2298,60 +2325,42 @@ function loadDashboard() {
         day++
     ) {
 
-        let month =
-            String(
-                today.getMonth() + 1
-            ).padStart(2, "0");
-
-        let date =
-            String(day)
-                .padStart(2, "0");
-
-
-        let reportKey =
-            `${user}_${todayYear}_${month}_${date}`;
-
-
-        let savedReport =
-            localStorage.getItem(
-                reportKey
+        const currentDate =
+            new Date(
+                currentYear,
+                currentMonth,
+                day
             );
 
 
-        if (savedReport) {
+        const report =
+            getUserDailyReport(
+                user,
+                currentDate
+            );
 
-            try {
 
-                let report =
-                    JSON.parse(
-                        savedReport
-                    );
+        if (report) {
 
-                let result =
-                    calculateProgress(
-                        report
-                    );
-
-                monthlyTotal +=
-                    result.percentage;
-
-                monthlyTracked++;
-
-            } catch (error) {
-
-                console.log(
-                    "Invalid monthly dashboard report:",
-                    reportKey
+            const result =
+                calculateProgress(
+                    report
                 );
 
-            }
+
+            monthlyTotal +=
+                result.percentage;
+
+
+            monthlyTracked++;
 
         }
 
     }
 
 
-    let monthlyAverage = 0;
+    let monthlyAverage =
+        0;
 
 
     if (
@@ -2367,16 +2376,13 @@ function loadDashboard() {
     }
 
 
-    // =================================
-    // MONTHLY UI
-    // =================================
-
-    let dashboardMonthlyAverage =
+    const dashboardMonthlyAverage =
         document.getElementById(
             "dashboardMonthlyAverage"
         );
 
-    let dashboardMonthlyBar =
+
+    const dashboardMonthlyBar =
         document.getElementById(
             "dashboardMonthlyBar"
         );
@@ -2403,11 +2409,12 @@ function loadDashboard() {
 
 
     // =================================
-    // OVERALL AVERAGE
+    // OVERALL
     // =================================
 
     let overallTotal =
         0;
+
 
     let overallTracked =
         0;
@@ -2419,12 +2426,22 @@ function loadDashboard() {
         i++
     ) {
 
-        let key =
+        const key =
             localStorage.key(i);
 
 
+        if (!key) {
+
+            continue;
+
+        }
+
+
+        // =================================
+        // ONLY CURRENT USER
+        // =================================
+
         if (
-            !key ||
             !key.startsWith(
                 user + "_"
             )
@@ -2435,11 +2452,13 @@ function loadDashboard() {
         }
 
 
-        let parts =
+        const parts =
             key.split("_");
 
 
-        // Only daily report keys
+        // =================================
+        // DAILY REPORT ONLY
+        // =================================
 
         if (
             parts.length !== 4
@@ -2450,7 +2469,7 @@ function loadDashboard() {
         }
 
 
-        let savedReport =
+        const savedReport =
             localStorage.getItem(
                 key
             );
@@ -2458,25 +2477,28 @@ function loadDashboard() {
 
         try {
 
-            let report =
+            const report =
                 JSON.parse(
                     savedReport
                 );
 
-            let result =
+
+            const result =
                 calculateProgress(
                     report
                 );
 
+
             overallTotal +=
                 result.percentage;
+
 
             overallTracked++;
 
         } catch (error) {
 
             console.log(
-                "Invalid overall dashboard report:",
+                "Invalid overall report:",
                 key
             );
 
@@ -2502,16 +2524,13 @@ function loadDashboard() {
     }
 
 
-    // =================================
-    // OVERALL UI
-    // =================================
-
-    let overallAverageText =
+    const overallAverageText =
         document.getElementById(
             "overallAverage"
         );
 
-    let overallProgressBar =
+
+    const overallProgressBar =
         document.getElementById(
             "overallProgressBar"
         );
@@ -2538,81 +2557,394 @@ function loadDashboard() {
 
 
     // =================================
-    // CURRENT STREAK
+    // STREAK
     // =================================
 
-    let streak = 0;
+    calculateDashboardStreak(
+        user
+    );
+
+}
 
 
-    for (;;) {
+// =====================================
+// DASHBOARD STREAK
+// =====================================
 
-        let year =
-            today.getFullYear();
+function calculateDashboardStreak(
+    user
+) {
 
-        let month =
-            String(
-                today.getMonth() + 1
-            ).padStart(2, "0");
-
-        let date =
-            String(
-                today.getDate()
-            ).padStart(2, "0");
+    const dates = [];
 
 
-        let reportKey =
-            `${user}_${year}_${month}_${date}`;
+    // =================================
+    // GET ONLY CURRENT USER DATES
+    // =================================
+
+    for (
+        let i = 0;
+        i < localStorage.length;
+        i++
+    ) {
+
+        const key =
+            localStorage.key(i);
 
 
-        let savedReport =
-            localStorage.getItem(
-                reportKey
-            );
+        if (!key) {
 
-
-        if (!savedReport) {
-
-            break;
-
-        }
-
-
-        try {
-
-            JSON.parse(
-                savedReport
-            );
-
-            streak++;
-
-        } catch (error) {
-
-            break;
+            continue;
 
         }
 
 
-        today.setDate(
-            today.getDate() - 1
+        if (
+            !key.startsWith(
+                user + "_"
+            )
+        ) {
+
+            continue;
+
+        }
+
+
+        const parts =
+            key.split("_");
+
+
+        if (
+            parts.length !== 4
+        ) {
+
+            continue;
+
+        }
+
+
+        const year =
+            Number(parts[1]);
+
+
+        const month =
+            Number(parts[2]);
+
+
+        const day =
+            Number(parts[3]);
+
+
+        if (
+            !year ||
+            !month ||
+            !day
+        ) {
+
+            continue;
+
+        }
+
+
+        dates.push(
+            new Date(
+                year,
+                month - 1,
+                day
+            )
         );
 
     }
 
 
     // =================================
-    // STREAK UI
+    // NO REPORT
     // =================================
 
+    if (
+        dates.length === 0
+    ) {
+
+        updateStreakDisplay(
+            0,
+            0
+        );
+
+        return;
+
+    }
+
+
+    // =================================
+    // SORT
+    // =================================
+
+    dates.sort(
+        function(a, b) {
+
+            return a - b;
+
+        }
+    );
+
+
+    // =================================
+    // REMOVE DUPLICATES
+    // =================================
+
+    const uniqueDates = [];
+
+
+    dates.forEach(
+        function(date) {
+
+            const key =
+                `${date.getFullYear()}-${String(
+                    date.getMonth() + 1
+                ).padStart(2, "0")}-${String(
+                    date.getDate()
+                ).padStart(2, "0")}`;
+
+
+            if (
+                !uniqueDates.includes(
+                    key
+                )
+            ) {
+
+                uniqueDates.push(
+                    key
+                );
+
+            }
+
+        }
+    );
+
+
+    // =================================
+    // BEST STREAK
+    // =================================
+
+    let bestStreak =
+        1;
+
+
+    let currentBest =
+        1;
+
+
+    for (
+        let i = 1;
+        i < uniqueDates.length;
+        i++
+    ) {
+
+        const previous =
+            new Date(
+                uniqueDates[i - 1]
+            );
+
+
+        const current =
+            new Date(
+                uniqueDates[i]
+            );
+
+
+        const difference =
+            Math.round(
+                (
+                    current -
+                    previous
+                ) /
+                (
+                    1000 *
+                    60 *
+                    60 *
+                    24
+                )
+            );
+
+
+        if (
+            difference === 1
+        ) {
+
+            currentBest++;
+
+        } else {
+
+            currentBest =
+                1;
+
+        }
+
+
+        if (
+            currentBest >
+            bestStreak
+        ) {
+
+            bestStreak =
+                currentBest;
+
+        }
+
+    }
+
+
+    // =================================
+    // CURRENT STREAK
+    // =================================
+
+    const today =
+        getTodayDate();
+
+
+    const latestDate =
+        new Date(
+            uniqueDates[
+                uniqueDates.length - 1
+            ]
+        );
+
+
+    latestDate.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+
+    const daysFromToday =
+        Math.round(
+            (
+                today -
+                latestDate
+            ) /
+            (
+                1000 *
+                60 *
+                60 *
+                24
+            )
+        );
+
+
     let currentStreak =
+        0;
+
+
+    // =================================
+    // LATEST REPORT = TODAY
+    // =================================
+
+    if (
+        daysFromToday === 0
+    ) {
+
+        currentStreak =
+            1;
+
+
+        for (
+            let i =
+                uniqueDates.length - 1;
+            i > 0;
+            i--
+        ) {
+
+            const current =
+                new Date(
+                    uniqueDates[i]
+                );
+
+
+            const previous =
+                new Date(
+                    uniqueDates[i - 1]
+                );
+
+
+            const difference =
+                Math.round(
+                    (
+                        current -
+                        previous
+                    ) /
+                    (
+                        1000 *
+                        60 *
+                        60 *
+                        24
+                    )
+                );
+
+
+            if (
+                difference === 1
+            ) {
+
+                currentStreak++;
+
+            } else {
+
+                break;
+
+            }
+
+        }
+
+    }
+
+
+    updateStreakDisplay(
+        currentStreak,
+        bestStreak
+    );
+
+}
+
+
+// =====================================
+// UPDATE STREAK DISPLAY
+// =====================================
+
+function updateStreakDisplay(
+    currentStreak,
+    bestStreak
+) {
+
+    const currentStreakElement =
         document.getElementById(
             "currentStreak"
         );
 
 
-    if (currentStreak) {
+    const bestStreakElement =
+        document.getElementById(
+            "bestStreak"
+        );
 
-        currentStreak.innerHTML =
-            `${streak} Day${streak === 1 ? "" : "s"}`;
+
+    if (
+        currentStreakElement
+    ) {
+
+        currentStreakElement.innerHTML =
+            `${currentStreak} Days`;
+
+    }
+
+
+    if (
+        bestStreakElement
+    ) {
+
+        bestStreakElement.innerHTML =
+            `${bestStreak} Days`;
 
     }
 
@@ -2620,7 +2952,72 @@ function loadDashboard() {
 
 
 // =====================================
-// REGISTER SERVICE WORKER
+// AUTO LOAD
+// =====================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+
+        // =================================
+        // CHECKLIST PAGE
+        // =================================
+
+        if (
+            document.getElementById(
+                "completedText"
+            )
+        ) {
+
+            loadUser();
+
+            loadReport();
+
+        }
+
+
+        // =================================
+        // HISTORY PAGE
+        // =================================
+
+        if (
+            document.getElementById(
+                "historyList"
+            )
+        ) {
+
+            loadHistory();
+
+            loadWeeklyReport();
+
+            loadMonthlyReport();
+
+            loadStreakData();
+
+        }
+
+
+        // =================================
+        // DASHBOARD PAGE
+        // =================================
+
+        if (
+            document.getElementById(
+                "todayCompleted"
+            )
+        ) {
+
+            loadDashboard();
+
+        }
+
+    }
+);
+
+
+// =====================================
+// SERVICE WORKER
 // =====================================
 
 if (
@@ -2629,27 +3026,31 @@ if (
 
     window.addEventListener(
         "load",
-        () => {
+        function() {
 
             navigator.serviceWorker
                 .register(
                     "service-worker.js"
                 )
-                .then(() => {
+                .then(
+                    function() {
 
-                    console.log(
-                        "Service Worker Registered ✅"
-                    );
+                        console.log(
+                            "Service Worker Registered ✅"
+                        );
 
-                })
-                .catch(error => {
+                    }
+                )
+                .catch(
+                    function(error) {
 
-                    console.log(
-                        "Service Worker Error:",
-                        error
-                    );
+                        console.log(
+                            "Service Worker Error:",
+                            error
+                        );
 
-                });
+                    }
+                );
 
         }
     );
