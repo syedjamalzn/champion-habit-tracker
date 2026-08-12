@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Champion Habit Tracker - Dashboard
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css">
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- =====================================
+         BACK BUTTON
+    ====================================== -->
+
+    <button
+        class="back-button"
+        onclick="history.back()"
+        aria-label="Go back">
+
+        ←
+
+    </button>
+
+
+    <!-- =====================================
+         HEADER
+    ====================================== -->
+
+    <h1>
+        🏆 Champion Habit Tracker
+    </h1>
+
+
+    <h2 id="welcomeText">
+        Welcome 👋
+    </h2>
+
+
+    <hr>
+
+
+    <!-- =====================================
+         DASHBOARD
+    ====================================== -->
+
+    <h2>
+        📊 Dashboard
+    </h2>
+
+
+    <!-- =====================================
+         CURRENT STREAK
+    ====================================== -->
+
+    <div class="dashboard-card">
+
+        <h3>
+            🔥 Current Streak
+        </h3>
+
+        <p id="currentStreak">
+            0 Days
+        </p>
+
+    </div>
+
+
+    <!-- =====================================
+         BEST STREAK
+    ====================================== -->
+
+    <div class="dashboard-card">
+
+        <h3>
+            🏆 Best Streak
+        </h3>
+
+        <p id="bestStreak">
+            0 Days
+        </p>
+
+    </div>
+
+
+    <!-- =====================================
+         TODAY'S PROGRESS
+    ====================================== -->
+
+    <div class="history-card">
+
+        <h3>
+            📅 Today's Progress
+        </h3>
+
+        <p id="todayCompleted">
+            Completed : 0 / 21
+        </p>
+
+        <p id="todayPercentage">
+            Progress : 0%
+        </p>
+
+        <progress
+            id="todayProgressBar"
+            value="0"
+            max="100">
+        </progress>
+
+    </div>
+
+
+    <!-- =====================================
+         TODAY'S WORKOUT
+    ====================================== -->
+
+    <div
+        class="history-card"
+        id="todayWorkoutCard">
+
+        <h3 id="dashboardWorkoutTitle">
+            🏋️ Today's Workout
+        </h3>
+
+
+        <p id="workoutGoalText">
+            Goal : Not Selected
+        </p>
+
+
+        <p id="workoutDayText">
+            Day : --
+        </p>
+
+
+        <p id="workoutStatus">
+            💪 Workout Not Started
+        </p>
+
+
+        <p id="workoutCompleted">
+            🏋️ Workout Progress : 0 / 0
+        </p>
+
+
+        <p id="workoutPercentage">
+            Progress : 0%
+        </p>
+
+
+        <progress
+            id="workoutProgressBar"
+            value="0"
+            max="100">
+        </progress>
+
+
+        <br>
+        <br>
+
+
+        <!-- IMPORTANT:
+             This function is defined in dashboard.js -->
+
+        <button
+            type="button"
+            id="openTodayWorkoutButton"
+            onclick="openTodayWorkout()">
+
+            🏋️ Open Today's Workout
+
+        </button>
+
+    </div>
+
+
+    <!-- =====================================
+         WEEKLY AVERAGE
+    ====================================== -->
+
+    <div class="history-card">
+
+        <h3>
+            📊 This Week
+        </h3>
+
+        <p id="dashboardWeeklyAverage">
+            Weekly Average : 0%
+        </p>
+
+        <progress
+            id="dashboardWeeklyBar"
+            value="0"
+            max="100">
+        </progress>
+
+    </div>
+
+
+    <!-- =====================================
+         MONTHLY AVERAGE
+    ====================================== -->
+
+    <div class="history-card">
+
+        <h3>
+            🗓️ This Month
+        </h3>
+
+        <p id="dashboardMonthlyAverage">
+            Monthly Average : 0%
+        </p>
+
+        <progress
+            id="dashboardMonthlyBar"
+            value="0"
+            max="100">
+        </progress>
+
+    </div>
+
+
+    <!-- =====================================
+         OVERALL AVERAGE
+    ====================================== -->
+
+    <div class="history-card">
+
+        <h3>
+            🏆 Overall Average
+        </h3>
+
+        <p id="overallAverage">
+            Overall Average : 0%
+        </p>
+
+        <progress
+            id="overallProgressBar"
+            value="0"
+            max="100">
+        </progress>
+
+    </div>
+
+
+    <hr>
+
+
+    <!-- =====================================
+         WORKOUT CENTER
+    ===================================== -->
+
+    <div class="dashboard-card">
+
+        <h3>
+            🏋️ Workout Center
+        </h3>
+
+        <p>
+            Fat Loss & Muscle Gain
+        </p>
+
+
+        <button
+            type="button"
+            onclick="window.location.href='workout.html'">
+
+            💪 Start Workout
+
+        </button>
+
+    </div>
+
+
+    <!-- =====================================
+         NAVIGATION
+    ====================================== -->
+
+    <button
+        type="button"
+        onclick="window.location.href='checklist.html'">
+
+        ⬅️ Today's Checklist
+
+    </button>
+
+
+    <button
+        type="button"
+        onclick="window.location.href='history.html'">
+
+        📅 View History
+
+    </button>
+
+
+</div>
+
+
+<!-- =====================================
+     DASHBOARD JAVASCRIPT
+====================================== -->
+
+<script src="dashboard.js"></script>
+
+
+</body>
+
+</html>
