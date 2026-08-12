@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Champion Habit Tracker - Exercise
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <button
+        type="button"
+        onclick="history.back()"
+        class="back-button"
+        aria-label="Go back">
+        ←
+    </button>
+
+
+    <!-- =================================
+         EXERCISE HEADER
+    ================================== -->
+
+    <h1 id="exerciseTitle">
+        🏋️ Exercise
+    </h1>
+
+
+    <p id="exerciseSubtitle">
+        Workout
+    </p>
+
+
+    <hr>
+
+
+    <!-- =================================
+         WORKOUT DETAILS
+    ================================== -->
+
+    <div class="dashboard-card">
+
+        <h3>
+            🎯 Target
+        </h3>
+
+        <p id="targetMuscle">
+            -
+        </p>
+
+
+        <h3>
+            🔢 Sets & Reps
+        </h3>
+
+        <p id="setsReps">
+            -
+        </p>
+
+
+        <h3>
+            ⏱️ Rest
+        </h3>
+
+        <p id="restTime">
+            -
+        </p>
+
+    </div>
+
+
+    <!-- =================================
+         INSTRUCTIONS
+    ================================== -->
+
+    <div class="dashboard-card">
+
+        <h3>
+            📋 Instructions
+        </h3>
+
+        <ol id="instructions"></ol>
+
+    </div>
+
+
+    <!-- =================================
+         FORM TIPS
+    ================================== -->
+
+    <div class="dashboard-card">
+
+        <h3>
+            💡 Form Tips
+        </h3>
+
+        <p id="formTips">
+            -
+        </p>
+
+    </div>
+
+
+    <!-- =================================
+         COMPLETION
+    ================================== -->
+
+    <div class="dashboard-card">
+
+        <label>
+
+            <input
+                type="checkbox"
+                id="exerciseCompleted">
+
+            <strong>
+                Exercise Completed
+            </strong>
+
+        </label>
+
+    </div>
+
+
+    <!-- =================================
+         NEXT WORKOUT
+    ================================== -->
+
+    <button
+        type="button"
+        id="nextWorkoutButton"
+        style="display:none;">
+
+        Next Workout ➡️
+
+    </button>
+
+</div>
+
+
+<script src="exercise.js"></script>
+
+</body>
+</html>
