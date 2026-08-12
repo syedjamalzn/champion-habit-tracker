@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#3563e9"
+    >
+
+    <title>
+        Champion Habit Tracker - Analytics
+    </title>
+
+    <!-- =====================================
+         ANALYTICS CSS
+         ===================================== -->
+
+    <link
+        rel="stylesheet"
+        href="analytics.css"
+    >
+
+</head>
+
+
+<body>
+
+    <!-- =====================================
+         MAIN CONTAINER
+         ===================================== -->
+
+    <main class="analytics-container">
+
+
+        <!-- =================================
+             HEADER
+             ================================= -->
+
+        <header class="analytics-header">
+
+            <h1>
+                🏆 Champion Habit Tracker
+            </h1>
+
+            <h2>
+                📊 Analytics & Reports
+            </h2>
+
+            <p
+                id="analyticsWelcome"
+                class="analytics-welcome"
+            >
+                Welcome 👋
+            </p>
+
+        </header>
+
+
+        <!-- =================================
+             USER SUMMARY
+             ================================= -->
+
+        <section
+            class="analytics-card"
+            id="summaryCard"
+        >
+
+            <h2>
+                📈 Performance Summary
+            </h2>
+
+
+            <div class="summary-grid">
+
+
+                <!-- CURRENT STREAK -->
+
+                <div class="summary-item">
+
+                    <span class="summary-icon">
+                        🔥
+                    </span>
+
+                    <h3>
+                        Current Streak
+                    </h3>
+
+                    <p
+                        id="analyticsCurrentStreak"
+                    >
+                        0 Days
+                    </p>
+
+                </div>
+
+
+                <!-- BEST STREAK -->
+
+                <div class="summary-item">
+
+                    <span class="summary-icon">
+                        🏆
+                    </span>
+
+                    <h3>
+                        Best Streak
+                    </h3>
+
+                    <p
+                        id="analyticsBestStreak"
+                    >
+                        0 Days
+                    </p>
+
+                </div>
+
+
+                <!-- WEEKLY -->
+
+                <div class="summary-item">
+
+                    <span class="summary-icon">
+                        📊
+                    </span>
+
+                    <h3>
+                        Weekly Average
+                    </h3>
+
+                    <p
+                        id="analyticsWeeklyAverage"
+                    >
+                        0%
+                    </p>
+
+                </div>
+
+
+                <!-- MONTHLY -->
+
+                <div class="summary-item">
+
+                    <span class="summary-icon">
+                        📅
+                    </span>
+
+                    <h3>
+                        Monthly Average
+                    </h3>
+
+                    <p
+                        id="analyticsMonthlyAverage"
+                    >
+                        0%
+                    </p>
+
+                </div>
+
+
+                <!-- OVERALL -->
+
+                <div class="summary-item">
+
+                    <span class="summary-icon">
+                        🎯
+                    </span>
+
+                    <h3>
+                        Overall Average
+                    </h3>
+
+                    <p
+                        id="analyticsOverallAverage"
+                    >
+                        0%
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================
+             WEEKLY ANALYTICS
+             ================================= -->
+
+        <section
+            class="analytics-card chart-card"
+            id="weeklyAnalytics"
+        >
+
+            <h2>
+                📊 Weekly Progress
+            </h2>
+
+            <p class="section-description">
+                Your daily habit performance for this week.
+            </p>
+
+
+            <!-- CHART WILL COME HERE -->
+
+            <div
+                id="weeklyChart"
+                class="chart-container"
+            >
+
+                <p class="chart-placeholder">
+                    Weekly chart will appear here.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================
+             MONTHLY ANALYTICS
+             ================================= -->
+
+        <section
+            class="analytics-card chart-card"
+            id="monthlyAnalytics"
+        >
+
+            <h2>
+                📅 Monthly Progress
+            </h2>
+
+            <p class="section-description">
+                Your progress across the current month.
+            </p>
+
+
+            <!-- CHART WILL COME HERE -->
+
+            <div
+                id="monthlyChart"
+                class="chart-container"
+            >
+
+                <p class="chart-placeholder">
+                    Monthly chart will appear here.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================
+             HABIT ANALYTICS
+             ================================= -->
+
+        <section
+            class="analytics-card chart-card"
+            id="habitAnalytics"
+        >
+
+            <h2>
+                ✅ Habit Performance
+            </h2>
+
+            <p class="section-description">
+                See which habits you complete most consistently.
+            </p>
+
+
+            <!-- CHART WILL COME HERE -->
+
+            <div
+                id="habitChart"
+                class="chart-container"
+            >
+
+                <p class="chart-placeholder">
+                    Habit performance chart will appear here.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================
+             WORKOUT ANALYTICS
+             ================================= -->
+
+        <section
+            class="analytics-card chart-card"
+            id="workoutAnalytics"
+        >
+
+            <h2>
+                🏋️ Workout Performance
+            </h2>
+
+            <p class="section-description">
+                Track your workout completion and consistency.
+            </p>
+
+
+            <!-- CHART WILL COME HERE -->
+
+            <div
+                id="workoutChart"
+                class="chart-container"
+            >
+
+                <p class="chart-placeholder">
+                    Workout chart will appear here.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================
+             GOAL ANALYSIS
+             ================================= -->
+
+        <section
+            class="analytics-card"
+            id="goalAnalytics"
+        >
+
+            <h2>
+                🎯 Goal Analysis
+            </h2>
+
+
+            <div class="goal-analysis">
+
+
+                <!-- CURRENT GOAL -->
+
+                <div class="goal-box">
+
+                    <span class="goal-icon">
+                        🎯
+                    </span>
+
+                    <h3>
+                        Current Goal
+                    </h3>
+
+                    <p
+                        id="analyticsGoal"
+                    >
+                        Not Selected
+                    </p>
+
+                </div>
+
+
+                <!-- GOAL CONSISTENCY -->
+
+                <div class="goal-box">
+
+                    <span class="goal-icon">
+                        📈
+                    </span>
+
+                    <h3>
+                        Goal Consistency
+                    </h3>
+
+                    <p
+                        id="goalConsistency"
+                    >
+                        0%
+                    </p>
+
+                </div>
+
+
+                <!-- WORKOUT CONSISTENCY -->
+
+                <div class="goal-box">
+
+                    <span class="goal-icon">
+                        🏋️
+                    </span>
+
+                    <h3>
+                        Workout Consistency
+                    </h3>
+
+                    <p
+                        id="workoutConsistency"
+                    >
+                        0%
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- GOAL MESSAGE -->
+
+            <div
+                id="goalMessage"
+                class="goal-message"
+            >
+                Select a goal and start tracking your progress.
+            </div>
+
+        </section>
+
+
+        <!-- =================================
+             ANALYTICS INSIGHT
+             ================================= -->
+
+        <section
+            class="analytics-card"
+            id="insightCard"
+        >
+
+            <h2>
+                💡 Performance Insight
+            </h2>
+
+            <p
+                id="performanceInsight"
+            >
+                Your performance insights will appear here.
+            </p>
+
+        </section>
+
+
+        <!-- =================================
+             NAVIGATION
+             ================================= -->
+
+        <section class="analytics-navigation">
+
+
+            <!-- DASHBOARD -->
+
+            <button
+                type="button"
+                class="analytics-button"
+                id="dashboardButton"
+            >
+                🏠 Dashboard
+            </button>
+
+
+            <!-- HISTORY -->
+
+            <button
+                type="button"
+                class="analytics-button"
+                id="historyButton"
+            >
+                📅 View History
+            </button>
+
+
+            <!-- TODAY CHECKLIST -->
+
+            <button
+                type="button"
+                class="analytics-button"
+                id="checklistButton"
+            >
+                ⬅️ Today's Checklist
+            </button>
+
+
+        </section>
+
+
+        <!-- =================================
+             FOOTER
+             ================================= -->
+
+        <footer class="analytics-footer">
+
+            <p>
+                🏆 Champion Habit Tracker
+            </p>
+
+            <p>
+                Track • Improve • Become Champion 💪
+            </p>
+
+        </footer>
+
+
+    </main>
+
+
+    <!-- =====================================
+         ANALYTICS JAVASCRIPT
+         ===================================== -->
+
+    <script
+        src="analytics.js"
+    ></script>
+
+
+</body>
+
+</html>
