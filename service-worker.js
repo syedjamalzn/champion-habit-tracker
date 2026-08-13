@@ -1,10 +1,10 @@
 // =====================================
 // CHAMPION HABIT TRACKER
 // SERVICE WORKER
-// PHASE 7 - STEP 3
+// PHASE 7 - OFFLINE FIX
 // =====================================
 
-const CACHE_NAME = "champion-habit-tracker-v2";
+const CACHE_NAME = "champion-habit-tracker-v3";
 
 const APP_FILES = [
     "./",
@@ -86,8 +86,12 @@ self.addEventListener("activate", event => {
                 return Promise.all(
 
                     keys
-                        .filter(key => key !== CACHE_NAME)
-                        .map(key => caches.delete(key))
+                        .filter(
+                            key => key !== CACHE_NAME
+                        )
+                        .map(
+                            key => caches.delete(key)
+                        )
 
                 );
 
@@ -108,19 +112,33 @@ self.addEventListener("fetch", event => {
 
     event.respondWith(
 
-        caches.match(event.request, {
-            ignoreSearch: true
-        })
+        caches.match(
+            event.request,
+            {
+                ignoreSearch: true
+            }
+        )
+
         .then(response => {
 
             if (response) {
+
                 return response;
+
             }
 
             return fetch(event.request);
 
         })
 
+        .catch(() => {
+
+            return caches.match(
+                "./index.html"
+            );
+
+        })
+
     );
 
-}); 
+});
