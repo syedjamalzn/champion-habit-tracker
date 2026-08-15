@@ -4,7 +4,7 @@
 // PHASE 7 - OFFLINE FIX
 // =====================================
 
-const CACHE_NAME = "champion-habit-tracker-v4";
+const CACHE_NAME = "champion-habit-tracker-v3";
 
 const APP_FILES = [
     "./",
